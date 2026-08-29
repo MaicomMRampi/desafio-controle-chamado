@@ -5,6 +5,8 @@ import 'dotenv/config';
 
 // routes
 import authRoutes from './src/routes/authRoutes.js'
+import userRoutes from './src/routes/userRoute.js'
+import priorityRoute from './src/routes/priorityRoute.js'
 
 const app = express()
 app.use(cookieParser())
@@ -17,6 +19,9 @@ app.use(cors({
 app.use(express.json())
 
 app.use(authRoutes)
+app.use(userRoutes)
+app.use(priorityRoute)
+
 const port = process.env.PORT || 5000
 
 app.listen(port, () => {
