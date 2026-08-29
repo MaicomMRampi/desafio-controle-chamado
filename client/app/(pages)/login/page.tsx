@@ -2,6 +2,7 @@
 
 import { api } from "@/app/lib/axiosInstance";
 import { Avatar, Button, Input } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 interface FormData {
@@ -10,15 +11,17 @@ interface FormData {
 }
 
 export default function Login() {
-
-  const { register, handleSubmit, watch, formState: { errors }, } = useForm({ defaultValues: { email: "", password: "", }, });
+  const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: { email: "", password: "", }, });
+  const router = useRouter()
 
   // ============= FUNÇÕES ============ 
 
   async function onSubmitForm(data: FormData) {
     try {
       const response = await api.post("/login", data)
-      console.log("🚀 ~ onSubmitForm ~ response:", response)
+      if (response.status === 200) {
+        router.push('/')
+      }
     } catch (error: undefined | any) {
       console.log("🚀 ~ onSubmitForm ~ error:", error.response)
       console.log('Erro ao fazer login', error?.message || error);

@@ -1,4 +1,4 @@
-import { allUsers, deleteUserId, updateUser } from "../services/userService.js";
+import { allUsers, deleteUserId, newUserSyst, updateUser } from "../services/userService.js";
 
 export async function getAllUsers(req, res) {
   try {
@@ -32,8 +32,25 @@ export async function deleteUser(req, res) {
 
 export async function userUpdate(req, res) {
   try {
-
+    const { name, id, email, role } = req.body
+    if (!name || !id || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+    const response = await updateUser(req.body)
+    return res.status(200).json({ message: 'Usuário atualizado com sucesso !' })
   } catch (error) {
+    console.log(`Erro ao atualizar usuario: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao atualiar usuário :${error?.message}` })
+  }
+}
 
+export async function newUser(req, res) {
+  try {
+    const { name, email, role, password } = req.body
+    if (!name || !password || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+    const response = await newUserSyst(req.body)
+    return res.status(200).json({ message: 'Usuário criado com sucesso !' })
+  } catch (error) {
+    console.log(`Erro ao criar usuario: ${error?.message}`)
+
+    return res.status(500).json({ message: `Erro ao criar usuário :${error?.message}` })
   }
 }
