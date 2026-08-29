@@ -1,5 +1,5 @@
 "use client"
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "../lib/axiosInstance";
 
@@ -23,6 +23,7 @@ const AuthContext = createContext<AuthContextDAt | null>(null)
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
+  const path = usePathname()
   const [loading, setLoaging] = useState(false)
 
   useEffect(() => {
@@ -34,10 +35,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
       } catch (error) {
         router.push('/login')
+        console.log("🚀 ~ checkToken ~ error:", error)
       }
     }
     checkToken()
-  }, [router])
+
+  }, [path, router])
+
 
   return (
     <AuthContext.Provider
