@@ -4,11 +4,12 @@ import {
   newPriority,
   deletePriority
 } from '../controllers/priorityController.js'
+import authJwt from '../middlewares/authJwt.js'
 
 const router = express.Router()
 
-router.get('/getPriority', getAllPriority)
-router.post('/newPriority', newPriority)
-router.delete('/deletePriority', deletePriority)
+router.get('/getPriority', authJwt, getAllPriority)
+router.post('/newPriority', authJwt, newPriority)
+router.delete('/deletePriority', authJwt, deletePriority)
 
 export default router
