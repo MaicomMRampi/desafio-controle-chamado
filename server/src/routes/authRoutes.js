@@ -1,10 +1,10 @@
 import express from 'express'
-import { login, checkAuth } from '../controllers/authController.js'
+import { login, checkAuth, logout } from '../controllers/authController.js'
 import authJwt from '../middlewares/authJwt.js'
 // import 
 const router = express.Router()
 
 router.post('/login', login)
 router.get('/me', authJwt, checkAuth)
-
+router.post('/logout', authJwt, logout)
 export default router

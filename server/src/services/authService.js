@@ -1,7 +1,7 @@
 import { db } from "../config/databaseConnect.js"
 import { comparePassword } from "../utils/bycrypt.js"
 
-const sqlUser = `select u.id, u.email, u.senha, u.status, u.perfil from usuarios u where u.email = $1`
+const sqlUser = `select u.id, u.nome, u.email, u.senha, u.status, u.perfil from usuarios u where u.email = $1`
 
 function returnCode(error, code, message) {
   return {
@@ -31,6 +31,7 @@ export async function AuthLogin({ password, email }) {
       user: {
         id: user.rows[0].id,
         email: user.rows[0].email,
+        name: user.rows[0].nome,
         role: user.rows[0].perfil
       }
     }

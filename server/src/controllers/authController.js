@@ -39,3 +39,18 @@ export async function checkAuth(req, res) {
     return res.status(500).json({ message: 'Erro ao consultar autenticação do usuário' })
   }
 }
+
+export async function logout(req, res) {
+  try {
+    res.clearCookie('help_desk_token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    })
+    return res.status(200).json({ message: 'Logoult realizado com sucesso !' })
+  } catch (error) {
+
+    return res.status(500).json({ message: 'Erro ao realizar logout' })
+  }
+}
