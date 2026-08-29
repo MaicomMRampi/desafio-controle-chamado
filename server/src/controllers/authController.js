@@ -29,3 +29,13 @@ export async function login(req, res) {
     return res.status(500).json({ message: error?.message })
   }
 }
+
+export async function checkAuth(req, res) {
+  try {
+    const dataUser = req.user
+    return res.status(200).json(dataUser)
+  } catch (error) {
+
+    return res.status(500).json({ message: 'Erro ao consultar autenticação do usuário' })
+  }
+}
