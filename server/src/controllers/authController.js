@@ -16,7 +16,7 @@ export async function login(req, res) {
     const jwtToken = jwt.sign(response.user, process.env.JWT_SECRET || 'senha provisoria', { expiresIn: '8h' })
 
     res.cookie('help_desk_token', jwtToken, {
-      httponly: true,
+      httpOnly: true,
       maxAge: 3600000 * 8,
       secure: process.env.NODE_ENV === 'production'
     })
