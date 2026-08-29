@@ -18,6 +18,8 @@ export async function login(req, res) {
     res.cookie('help_desk_token', jwtToken, {
       httpOnly: true,
       maxAge: 3600000 * 8,
+      path: '/',
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production'
     })
 
