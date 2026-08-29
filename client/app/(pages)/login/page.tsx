@@ -2,7 +2,6 @@
 
 import { api } from "@/app/lib/axiosInstance";
 import { Avatar, Button, Input } from "@heroui/react";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface FormData {
