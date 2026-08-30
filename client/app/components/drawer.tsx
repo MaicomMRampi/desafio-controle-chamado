@@ -4,6 +4,7 @@ import { Button, Drawer } from "@heroui/react";
 import { api } from "../lib/axiosInstance";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { UserAuth } from '../page'
 import { useState } from "react";
 import {
   Home,
@@ -13,6 +14,7 @@ import {
   Menu,
   PhoneIncoming
 } from "lucide-react";
+import { useAuth } from "../utils/auth_provider";
 
 interface NavigationItem {
   label: string;
@@ -24,6 +26,7 @@ export default function Navigation() {
   const router = useRouter();
   const path = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isAdmin }: UserAuth | any = useAuth()
 
   const navItems: NavigationItem[] = [
     { label: "Início", href: "/", icon: Home },
@@ -78,8 +81,8 @@ export default function Navigation() {
                 <nav className="flex flex-col gap-1.5">
                   {navItems.map((item) => {
                     const Icon = item.icon;
-                    const inRoute = path === item.href;
-
+                    const inRoute = path === item.href
+                    if (!isAdmin && item.label == 'Painel Admin') return null
                     return (
                       <Link
                         key={item.label}

@@ -76,8 +76,11 @@ export default function Home() {
       </div>
       <div>
         <div className="flex justify-end my-3">
-          <Button onPress={() => setModal({ open: true, type: 'new', data: null })}>
-            <Plus /> Novo Chamado</Button>
+          {['administrador', 'cliente'].includes(user?.role) && (
+            <Button onPress={() => setModal({ open: true, type: 'new', data: null })}>
+              <Plus /> Novo Chamado
+            </Button>
+          )}
         </div>
       </div>
       <TableHome
