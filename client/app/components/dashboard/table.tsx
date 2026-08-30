@@ -1,206 +1,112 @@
 "use client";
 
-import type { Selection, SortDescriptor } from "@heroui/react";
+import type { SortDescriptor } from "@heroui/react";
+import { Button, Table } from "@heroui/react";
+import { Eye, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Status, Priority } from './chipStatus'
 
-import { Avatar, Button, Checkbox, Chip, Table } from "@heroui/react";
-import { useMemo, useState } from "react";
-
-interface User {
-  id: number;
-  name: string;
-  image_url: string;
-  role: string;
-  status: "Active" | "Inactive" | "On Leave";
-  email: string;
+interface RowsProps {
+  id: number,
+  client: string
+  description: string
+  insertedDate: string
+  openingDate: string
+  status: string
+  technician: string
+  tecnicianName: string
+  title: string
+  userResponsive: number,
+  priority: string
 }
 
-const statusColorMap: Record<string, "success" | "danger" | "warning"> = {
-  Active: "success",
-  Inactive: "danger",
-  "On Leave": "warning",
-};
+interface Rows {
+  rows: RowsProps[]
+  onView: (data: RowsProps) => void,
+  onDelete: (data: RowsProps) => void
+}
 
-const users: User[] = [
-  {
-    email: "kate@acme.com",
-    id: 4586932,
-    image_url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/red.jpg",
-    name: "Kate Moore",
-    role: "Chief Executive Officer",
-    status: "Active",
-  },
-  {
-    email: "john@acme.com",
-    id: 5273849,
-    image_url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/green.jpg",
-    name: "John Smith",
-    role: "Chief Technology Officer",
-    status: "Active",
-  },
-  {
-    email: "sara@acme.com",
-    id: 7492836,
-    image_url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/blue.jpg",
-    name: "Sara Johnson",
-    role: "Chief Marketing Officer",
-    status: "On Leave",
-  },
-  {
-    email: "michael@acme.com",
-    id: 8293746,
-    image_url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/purple.jpg",
-    name: "Michael Brown",
-    role: "Chief Financial Officer",
-    status: "Active",
-  },
-  {
-    email: "emily@acme.com",
-    id: 1234567,
-    image_url: "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg",
-    name: "Emily Davis",
-    role: "Product Manager",
-    status: "Inactive",
-  },
-];
-
-export default function TableHome() {
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+export default function TableHome({ rows, onView, onDelete }: Rows) {
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "name",
-    direction: "ascending",
+    column: "status", direction: "ascending",
   });
 
-  const sortedUsers = useMemo(() => {
-    return [...users].sort((a, b) => {
-      const col = sortDescriptor.column as keyof User;
-      const first = String(a[col]);
-      const second = String(b[col]);
-      let cmp = first.localeCompare(second);
-
-      if (sortDescriptor.direction === "descending") {
-        cmp *= -1;
-      }
-
-      return cmp;
-    });
-  }, [sortDescriptor]);
-
   return (
-    <Table className="max-h-[80%]">
+    <Table>
       <Table.ScrollContainer>
         <Table.Content
-          aria-label="Table with custom cells"
-          selectedKeys={selectedKeys}
-          selectionMode="multiple"
+          aria-label="Sortable table"
+          className="min-w-150"
           sortDescriptor={sortDescriptor}
-          onSelectionChange={setSelectedKeys}
           onSortChange={setSortDescriptor}
         >
           <Table.Header>
-            <Table.Column className="pe-0">
-              <Checkbox aria-label="Select all" slot="selection">
-                <Checkbox.Content>
-                  <Checkbox.Control>
-                    <Checkbox.Indicator />
-                  </Checkbox.Control>
-                </Checkbox.Content>
-              </Checkbox>
-            </Table.Column>
-            <Table.Column allowsSorting isRowHeader className="after:hidden" id="id">
-              {({ sortDirection }) => (
-                <Table.SortableColumnHeader sortDirection={sortDirection}>
-                  Worker ID
-                </Table.SortableColumnHeader>
-              )}
-            </Table.Column>
-            <Table.Column allowsSorting id="name">
-              {({ sortDirection }) => (
-                <Table.SortableColumnHeader sortDirection={sortDirection}>
-                  Member
-                </Table.SortableColumnHeader>
-              )}
-            </Table.Column>
-            <Table.Column allowsSorting id="role">
-              {({ sortDirection }) => (
-                <Table.SortableColumnHeader sortDirection={sortDirection}>
-                  Role
-                </Table.SortableColumnHeader>
-              )}
-            </Table.Column>
-            <Table.Column allowsSorting id="status">
+            <Table.Column allowsSorting isRowHeader id="status">
               {({ sortDirection }) => (
                 <Table.SortableColumnHeader sortDirection={sortDirection}>
                   Status
                 </Table.SortableColumnHeader>
               )}
             </Table.Column>
-            <Table.Column className="text-end">Actions</Table.Column>
+            <Table.Column allowsSorting id="title">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Cliente
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
+            <Table.Column allowsSorting id="cliente">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Titulo
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
+            <Table.Column allowsSorting id="tecnico">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Técnico
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
+            <Table.Column allowsSorting id="prioridade">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Prioridade
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
+            <Table.Column allowsSorting id="email">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Data de Abertura
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
+            <Table.Column allowsSorting id="actions">
+              {({ sortDirection }) => (
+                <Table.SortableColumnHeader sortDirection={sortDirection}>
+                  Ações
+                </Table.SortableColumnHeader>
+              )}
+            </Table.Column>
           </Table.Header>
           <Table.Body>
-            {sortedUsers.map((user) => (
+            {rows.map((user) => (
               <Table.Row key={user.id} id={user.id}>
-                <Table.Cell className="pe-0">
-                  <Checkbox aria-label={`Select ${user.name}`} slot="selection" variant="secondary">
-                    <Checkbox.Content>
-                      <Checkbox.Control>
-                        <Checkbox.Indicator />
-                      </Checkbox.Control>
-                    </Checkbox.Content>
-                  </Checkbox>
-                </Table.Cell>
-                <Table.Cell className="font-medium">
-                  <div className="flex items-center gap-2">
-                    #{user.id.toString()}{" "}
-                    <Button isIconOnly aria-label={`Copy ID #${user.id}`} size="sm" variant="ghost">
-
-                    </Button>
-                  </div>
-                </Table.Cell>
+                <Table.Cell><Status value={user.status} /></Table.Cell>
+                <Table.Cell>{user.client}</Table.Cell>
+                <Table.Cell>{user.title}</Table.Cell>
+                <Table.Cell>{user.tecnicianName}</Table.Cell>
+                <Table.Cell><Priority value={user.priority} /></Table.Cell>
+                <Table.Cell>{user.openingDate ? new Date(user.openingDate).toLocaleDateString("pt-br") : '-'}</Table.Cell>
                 <Table.Cell>
-                  <div className="flex items-center gap-3">
-                    <Avatar size="sm">
-                      <Avatar.Image src={user.image_url} />
-                      <Avatar.Fallback>
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </Avatar.Fallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="text-xs">{user.name}</span>
-                      <span className="text-xs text-muted">{user.email}</span>
-                    </div>
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="min-w-52">{user.role}</Table.Cell>
-                <Table.Cell className="min-w-25">
-                  <Chip color={statusColorMap[user.status]} size="sm" variant="soft">
-                    {user.status}
-                  </Chip>
-                </Table.Cell>
-                <Table.Cell>
-                  <div className="flex items-center gap-1">
-                    <Button
-                      isIconOnly
-                      aria-label={`View ${user.name}`}
-                      size="sm"
-                      variant="tertiary"
-                    >
+                  <div className="flex gap-3">
+                    <Button onPress={() => onView(user)} isIconOnly variant="secondary">
+                      <Eye />
                     </Button>
-                    <Button
-                      isIconOnly
-                      aria-label={`Edit ${user.name}`}
-                      size="sm"
-                      variant="tertiary"
-                    >
-                    </Button>
-                    <Button
-                      isIconOnly
-                      aria-label={`Delete ${user.name}`}
-                      size="sm"
-                      variant="danger-soft"
-                    >
+                    <Button onPress={() => onDelete(user)} isIconOnly variant="danger-soft">
+                      <Trash2 />
                     </Button>
                   </div>
                 </Table.Cell>

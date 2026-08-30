@@ -18,10 +18,12 @@ export interface PropsObj {
   title: string,
   description: string,
   client: string,
-  technician_id: number | null,
+  technician_id?: number | null,
   status: string,
   priority: string,
-  openingDate: string | null
+  openingDate?: string
+  insertedDate?: string | null,
+  tecnicianName?: string
 }
 
 interface Tecnhicians {

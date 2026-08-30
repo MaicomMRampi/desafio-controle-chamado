@@ -5,7 +5,6 @@ import NewUser, { PropsModal } from "@/app/components/ModalNovoUsuario";
 import { api } from "@/app/lib/axiosInstance";
 import { Button, Chip, Table } from "@heroui/react";
 import { Pencil, UserRoundX } from 'lucide-react';
-
 import { useEffect, useState } from "react";
 
 interface PropsStateModal {
