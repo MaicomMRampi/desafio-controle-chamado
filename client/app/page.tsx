@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { api } from "./lib/axiosInstance";
 import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
+import Metrics from "./components/dashboard/Metrics";
 
 export interface UserAuth {
   name: string | null,
@@ -54,7 +55,7 @@ export default function Home() {
         getSchedule()
       }
     } catch (error) {
-
+      console.log(`Erro ao exluir atendimento`)
     }
   }
 
@@ -71,6 +72,7 @@ export default function Home() {
           <h1>{user?.role}</h1>
         </div>
       </div>
+      <Metrics values={rows} />
       <div>
         filtros
       </div>
