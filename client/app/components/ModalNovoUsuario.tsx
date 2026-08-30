@@ -150,7 +150,6 @@ export default function NewUser({ open, onClose, onSave, data }: Props) {
                       )}
                     />
                   )}
-
                   <Controller
                     name="role"
                     control={control}

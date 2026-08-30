@@ -60,7 +60,7 @@ export default function Navigation() {
 
       <Drawer isOpen={isOpen} onOpenChange={setIsOpen}>
         <Drawer.Backdrop>
-          <Drawer.Content placement="left" className="max-w-xs">
+          <Drawer.Content placement="left" className="max-w-xs" >
             <Drawer.Dialog className="flex flex-col justify-between h-full">
               <Drawer.CloseTrigger />
               <Drawer.Header className="border-b border-default-100 pb-4">
@@ -102,7 +102,10 @@ export default function Navigation() {
                 <Button
                   variant="outline"
                   className="w-full justify-start gap-3 text-sm font-medium border border-red-300"
-                  onPress={Logout}
+                  onPress={() => {
+                    Logout();
+                    setIsOpen(false)
+                  }}
                 >
                   <span>
                     <LogOut size={18} />

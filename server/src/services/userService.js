@@ -5,6 +5,7 @@ const sqlGetAllUsers = `select u.nome as name,  u.id, u.email, u.status, u.perfi
 const sqlDeleteUser = `delete from usuarios where id = $1 `
 const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3 where id = $4`
 const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values ($1, $2, $3, $4)`
+const sqlTechnician = `select u.id, u.nome from usuarios u where u.perfil = 'tecnico' order by u.perfil asc`
 
 export async function allUsers() {
   try {
@@ -61,3 +62,10 @@ export async function newUserSyst(values) {
   }
 }
 
+export async function getAllTechnician() {
+  try {
+    return (await db.query(sqlTechnician)).rows
+  } catch (error) {
+    throw new Error(`Erro ao buscar técnicos: ${error?.message}`)
+  }
+}

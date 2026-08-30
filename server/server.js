@@ -7,6 +7,7 @@ import 'dotenv/config';
 import authRoutes from './src/routes/authRoutes.js'
 import userRoutes from './src/routes/userRoute.js'
 import priorityRoute from './src/routes/priorityRoute.js'
+import schedulingRoute from './src/routes/schedulingRoutes.js'
 
 const app = express()
 app.use(cookieParser())
@@ -21,6 +22,7 @@ app.use(express.json())
 app.use(authRoutes)
 app.use(userRoutes)
 app.use(priorityRoute)
+app.use(schedulingRoute)
 
 const port = process.env.PORT || 5000
 
