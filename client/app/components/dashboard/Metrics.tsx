@@ -28,7 +28,7 @@ export default function Metrics({ values = [] }: MetricsProps) {
   const alta = values.filter((item) => item.priority === "ALTA").length;
 
   return (
-    <div className="gap-2 py-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5">
+    <div className="gap-2 py-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 a">
       <MetricCard iconColor="bg-emerald-100 text-emerald-600" colorCard="bg-emerald-50 border-emerald-200" icon={AlertTriangle} title="Resolvidos" value={isResolved} />
       <MetricCard iconColor="bg-blue-100 text-blue-600" colorCard="bg-blue-50 border-blue-200" icon={Clock} title="Total em Aberto" value={abertos} />
       <MetricCard iconColor="bg-red-50 border-red-200" colorCard="bg-red-50 border-red-200" icon={AlertCircle} title="Vencidos" value={vencidos} />

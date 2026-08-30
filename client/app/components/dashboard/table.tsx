@@ -37,7 +37,6 @@ export default function TableHome({ rows, onView, onDelete }: Rows) {
 
   return (
     <>
-      {isAdmin ? 'sim' : 'false'}
       <Table>
         <Table.ScrollContainer>
           <Table.Content
@@ -47,6 +46,13 @@ export default function TableHome({ rows, onView, onDelete }: Rows) {
             onSortChange={setSortDescriptor}
           >
             <Table.Header>
+              <Table.Column allowsSorting isRowHeader id="Id">
+                {({ sortDirection }) => (
+                  <Table.SortableColumnHeader sortDirection={sortDirection}>
+                    Id
+                  </Table.SortableColumnHeader>
+                )}
+              </Table.Column>
               <Table.Column allowsSorting isRowHeader id="status">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
@@ -100,6 +106,7 @@ export default function TableHome({ rows, onView, onDelete }: Rows) {
             <Table.Body>
               {rows.map((user) => (
                 <Table.Row key={user.id} id={user.id}>
+                  <Table.Cell>{user.id}</Table.Cell>
                   <Table.Cell><Status value={user.status} /></Table.Cell>
                   <Table.Cell>{user.client}</Table.Cell>
                   <Table.Cell>{user.title}</Table.Cell>

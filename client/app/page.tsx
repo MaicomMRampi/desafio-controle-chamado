@@ -4,7 +4,7 @@ import TableHome, { RowsProps } from "./components/dashboard/table";
 import { useAuth } from "./utils/auth_provider";
 import { Plus } from "lucide-react";
 import { ModalAddShedule, PropsObj } from "./components/dashboard/ModalAddShedule";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "./lib/axiosInstance";
 import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
@@ -22,13 +22,17 @@ interface ModalProps {
   data: PropsObj | null
 }
 
+const initialValues = { all: '', date: '', status: '', priority: '' }
+
 export default function Home() {
 
   //  ============= ESTADOS ===========
   const { user, isAdmin }: UserAuth | any = useAuth()
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
   const [rows, setRows] = useState<RowsProps[]>([])
-  const [filter, setFilter] = useState({ all: '', date: '', status: '', priority: '' })
+  const [filter, setFilter] = useState(initialValues)
+  const priorityFilter = rows?.map(i => i.priority)
+  const statuFilter = rows?.map(i => i.status)
   // ========= FUNÇÕES ==============
 
   async function saveShedule(values: PropsObj) {
@@ -65,12 +69,31 @@ export default function Home() {
     }
   }
 
-  function onFilter(value: string) {
-    console.log(value)
+  function onChangeFilter(key: string, value: string) {
+    setFilter(prev => ({
+      ...prev,
+      [key]: value
+    }))
   }
-  const priorityFilter = rows?.map(i => i.priority)
-  const statuFilter = rows?.map(i => i.status)
 
+  const filteredRows = useMemo(() => {
+    if (!rows) return []
+    return rows.filter((item) => {
+      const searchAll = filter.all?.toLocaleLowerCase().trim()
+      const searc = !searchAll ||
+        item.title?.toLocaleLowerCase().includes(searchAll) ||
+        item.client?.toLocaleLowerCase().includes(searchAll) ||
+        item.description?.toLocaleLowerCase().includes(searchAll) ||
+        String(item.id).includes(searchAll)
+
+      const date = !filter.date || item.openingDate.startsWith(filter.date)
+      const status = !filter.status || item.status.includes(filter.status)
+      const classification = !filter.priority || item.priority.includes(filter.priority)
+
+      return searc && date && status && classification
+    })
+
+  }, [filter, rows])
   // ============ HOOKS ==========
 
   useEffect(() => {
@@ -79,15 +102,25 @@ export default function Home() {
 
   return (
     <div className="w-[90%] mx-auto">
-      <div className="px-4 rounded-2xl h-50 bg-[#0d2e4d]">
-        <div className="pt-8">
+      <div className="px-4 rounded-2xl bg-[#0d2e4d] p-4">
+        <div className="">
           <h1 className="text-white font-bold">Olá {user?.name} !</h1>
           <h1 className="text-white">Bem-Vindo ao <b>Help Desk</b> Bold Energy</h1>
           <h1>{user?.role}</h1>
         </div>
       </div>
-      <Metrics values={rows} />
-      <FiltersScheduling priorityFilter={priorityFilter} statusFilter={statuFilter} onFilter={(value) => console.log(value)} filterState={filter} />
+      <Metrics
+        values={rows}
+      />
+      <div className="py-3">
+        <FiltersScheduling
+          priorityFilter={priorityFilter}
+          statusFilter={statuFilter}
+          onFilter={(key, value) => onChangeFilter(key, value)}
+          filterState={filter}
+          onClear={() => setFilter(initialValues)}
+        />
+      </div>
       <div className="flex justify-end my-3">
         {['administrador', 'cliente'].includes(user?.role) && (
           <Button onPress={() => setModal({ open: true, type: 'new', data: null })}>
@@ -96,7 +129,7 @@ export default function Home() {
         )}
       </div>
       <TableHome
-        rows={rows}
+        rows={filteredRows}
         onView={(data) => setModal({ open: true, type: 'details', data: data })}
         onDelete={(value) => setModal({ open: true, type: 'delete', data: value })}
       />
