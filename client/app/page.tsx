@@ -9,7 +9,7 @@ import { api } from "./lib/axiosInstance";
 import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
 
-interface UserAuth {
+export interface UserAuth {
   name: string | null,
   role: string | null
 }
@@ -21,10 +21,9 @@ interface ModalProps {
 }
 
 export default function Home() {
-  const { user }: UserAuth | any = useAuth()
+  const { user, isAdmin }: UserAuth | any = useAuth()
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
   const [rows, setRows] = useState([])
-
   async function saveShedule(values: PropsObj) {
     try {
       const responseSave = await api.post(`/saveScheduling`, values)

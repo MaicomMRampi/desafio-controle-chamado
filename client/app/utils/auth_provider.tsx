@@ -10,12 +10,13 @@ interface AuthProviderProps {
 interface User {
   id: number,
   email: string,
-  perfil: string
+  role: string,
 }
 
 interface AuthContextDAt {
   user: User | null
-  loading: boolean
+  loading: boolean,
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextDAt | null>(null)
@@ -42,12 +43,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   }, [path, router])
 
-
+  const isAdmin = user?.role === 'administrador' ? true : false
   return (
     <AuthContext.Provider
       value={{
         user,
         loading,
+        isAdmin
       }}
     >
       {children}
