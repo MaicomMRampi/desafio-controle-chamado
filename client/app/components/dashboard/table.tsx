@@ -8,7 +8,7 @@ import { Status, Priority } from './chipStatus'
 import { UserAuth } from '../../page'
 import { useAuth } from "@/app/utils/auth_provider";
 
-interface RowsProps {
+export interface RowsProps {
   id: number,
   client: string
   description: string

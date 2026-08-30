@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@heroui/react";
-import TableHome from "./components/dashboard/table";
+import { Button, Input, Label, ListBox, Select } from "@heroui/react";
+import TableHome, { RowsProps } from "./components/dashboard/table";
 import { useAuth } from "./utils/auth_provider";
 import { Plus } from "lucide-react";
 import { ModalAddShedule, PropsObj } from "./components/dashboard/ModalAddShedule";
@@ -9,6 +9,7 @@ import { api } from "./lib/axiosInstance";
 import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
 import Metrics from "./components/dashboard/Metrics";
+import FiltersScheduling from './components/Filters'
 
 export interface UserAuth {
   name: string | null,
@@ -22,9 +23,14 @@ interface ModalProps {
 }
 
 export default function Home() {
+
+  //  ============= ESTADOS ===========
   const { user, isAdmin }: UserAuth | any = useAuth()
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
-  const [rows, setRows] = useState([])
+  const [rows, setRows] = useState<RowsProps[]>([])
+  const [filter, setFilter] = useState({ all: '', date: '', status: '', priority: '' })
+  // ========= FUNÇÕES ==============
+
   async function saveShedule(values: PropsObj) {
     try {
       const responseSave = await api.post(`/saveScheduling`, values)
@@ -59,6 +65,14 @@ export default function Home() {
     }
   }
 
+  function onFilter(value: string) {
+    console.log(value)
+  }
+  const priorityFilter = rows?.map(i => i.priority)
+  const statuFilter = rows?.map(i => i.status)
+
+  // ============ HOOKS ==========
+
   useEffect(() => {
     getSchedule()
   }, [])
@@ -73,17 +87,13 @@ export default function Home() {
         </div>
       </div>
       <Metrics values={rows} />
-      <div>
-        filtros
-      </div>
-      <div>
-        <div className="flex justify-end my-3">
-          {['administrador', 'cliente'].includes(user?.role) && (
-            <Button onPress={() => setModal({ open: true, type: 'new', data: null })}>
-              <Plus /> Novo Chamado
-            </Button>
-          )}
-        </div>
+      <FiltersScheduling priorityFilter={priorityFilter} statusFilter={statuFilter} onFilter={(value) => console.log(value)} filterState={filter} />
+      <div className="flex justify-end my-3">
+        {['administrador', 'cliente'].includes(user?.role) && (
+          <Button onPress={() => setModal({ open: true, type: 'new', data: null })}>
+            <Plus /> Novo Chamado
+          </Button>
+        )}
       </div>
       <TableHome
         rows={rows}
