@@ -7,6 +7,7 @@ import { Save } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { api } from "@/app/lib/axiosInstance";
+import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault";
 
 interface PropsForm {
   name?: string,
@@ -25,7 +26,9 @@ export default function Profile() {
   async function updateUser(values: any) {
     try {
       const response = await api.put('/updateProfile', values)
+      showSuccessToast(response?.data?.message)
     } catch (error: any | unknown) {
+      showErrorToast(error?.response?.data?.message)
       console.log(`Erro ao atualizar usuario: ${error?.response?.data?.message}`)
     }
   }
@@ -80,7 +83,6 @@ export default function Profile() {
               </TextField>
             )}
           />
-
           <Controller
             name="email"
             control={control}
@@ -108,14 +110,11 @@ export default function Profile() {
             )}
           />
         </div>
-
         <hr className="border-slate-100" />
-
         <div className="space-y-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
             Alterar Senha
           </h2>
-
           <div className="flex flex-col gap-1.5">
             <Controller
               name="oldPassword"
