@@ -1,4 +1,4 @@
-import { allUsers, deleteUserId, newUserSyst, updateUser, getAllTechnician } from "../services/userService.js";
+import { allUsers, deleteUserId, newUserSyst, updateUser, getAllTechnician, updateProfileService } from "../services/userService.js";
 
 export async function getAllUsers(req, res) {
   try {
@@ -54,6 +54,7 @@ export async function newUser(req, res) {
     return res.status(500).json({ message: `Erro ao criar usuário :${error?.message}` })
   }
 }
+
 export async function getTechnician(req, res) {
   try {
     const response = await getAllTechnician(req.body)
@@ -62,5 +63,29 @@ export async function getTechnician(req, res) {
     console.log(`Erro ao buscar técnicos': ${error?.message}`)
 
     return res.status(500).json({ message: `Erro ao buscar técnicos :${error?.message}` })
+  }
+}
+
+export async function updateProfile(req, res) {
+  try {
+    const { id, email, name, oldPassword, newPassword, newConfirmPasword } = req.body
+
+    if (
+      !email ||
+      !name ||
+      !oldPassword ||
+      !newPassword ||
+      !newConfirmPasword
+    ) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+
+    const response = await updateProfileService(req.body)
+    if (response.error) return res.status(response.code).json({ message: response.message })
+
+    return res.status(200).json({ message: response.message || 'Dados atualizados com sucesso' })
+
+  } catch (error) {
+    console.log(`Erro ao atualizar dados': ${error?.message}`)
+
+    return res.status(500).json({ message: `Erro ao atualizar dados :${error?.message}` })
   }
 }
