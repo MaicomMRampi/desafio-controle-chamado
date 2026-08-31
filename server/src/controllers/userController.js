@@ -70,13 +70,9 @@ export async function updateProfile(req, res) {
   try {
     const { id, email, name, oldPassword, newPassword, newConfirmPasword } = req.body
 
-    if (
-      !email ||
-      !name ||
-      !oldPassword ||
-      !newPassword ||
-      !newConfirmPasword
-    ) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+    if (!email || !name || (oldPassword && (!newPassword || !newConfirmPasword))) {
+      return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    }
 
     const response = await updateProfileService(req.body)
     if (response.error) return res.status(response.code).json({ message: response.message })

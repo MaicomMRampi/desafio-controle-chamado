@@ -7,8 +7,10 @@ const sqlDeleteUser = `delete from usuarios where id = $1 `
 const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3 where id = $4`
 const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values ($1, $2, $3, $4)`
 const sqlTechnician = `select u.id, u.nome from usuarios u where u.perfil = 'tecnico' order by u.perfil asc`
+
 const sqlUserPassword = `select senha from usuarios u where u.id = $1`
 const sqlUpdate = `update usuarios set nome = $1, email = $2, senha = $3, primeiro_acesso = $4 where id = $5`
+
 
 export async function allUsers() {
   try {
@@ -83,6 +85,10 @@ export async function updateProfileService(values) {
     transationStart = true
 
     const { id, email, name, oldPassword, newPassword, newConfirmPasword } = values
+
+    const isChangingPassword = Boolean(oldPassword || newPassword || newConfirmPasword)
+
+    if (isChangingPassword) return ErroResponse(400, 'Preencha todos os campos de senha para alterá-la', true);
 
     if (newPassword != newConfirmPasword) return ErroResponse(400, 'Senhas não conferem', true)
     const password = await db.query(sqlUserPassword, [id])

@@ -1,35 +1,53 @@
-"use client";
+"use client"
 
-import { useAuth } from "@/app/utils/auth_provider";
-import { UserAuth } from "@/app/page";
-import { Button, Input, Chip, TextField, Label } from "@heroui/react";
-import { Save } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { api } from "@/app/lib/axiosInstance";
-import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/utils/auth_provider"
+import { UserAuth } from "@/app/page"
+import { Button, Input, Chip, TextField, Label } from "@heroui/react"
+import { Save } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { useEffect } from "react"
+import { api } from "@/app/lib/axiosInstance"
+import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault"
+import { useRouter } from "next/navigation"
 
 interface PropsForm {
-  name?: string,
-  email: string,
-  oldPassword?: string,
-  newPassword?: string,
-  newConfirmPasword: string
+  name: string
+  email: string
+  oldPassword?: string
+  newPassword?: string
+  newConfirmPassword?: string
 }
 
-const defaultValuesUser = { name: '', email: '', oldPassword: '', newPassword: '', newConfirmPasword: '' }
+const defaultValuesUser: PropsForm = {
+  name: "",
+  email: "",
+  oldPassword: "",
+  newPassword: "",
+  newConfirmPassword: "",
+}
 
 export default function Profile() {
-  const { user }: UserAuth | any = useAuth();
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<PropsForm>({ defaultValues: defaultValuesUser })
+  const { user }: UserAuth | any = useAuth()
   const router = useRouter()
-  async function updateUser(values: any) {
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<PropsForm>({
+    defaultValues: defaultValuesUser,
+  })
+
+  const newPasswordValue = watch("newPassword")
+
+  async function updateUser(values: PropsForm) {
     try {
-      const response = await api.put('/updateProfile', values)
+      const response = await api.put("/updateProfile", values)
       showSuccessToast(response?.data?.message)
-      router.push('/')
-    } catch (error: any | unknown) {
+      router.push("/")
+    } catch (error: any) {
       showErrorToast(error?.response?.data?.message)
       console.log(`Erro ao atualizar usuario: ${error?.response?.data?.message}`)
     }
@@ -37,16 +55,22 @@ export default function Profile() {
 
   useEffect(() => {
     if (user) {
-      reset(user)
+      reset({
+        name: user.name || "",
+        email: user.email || "",
+        oldPassword: "",
+        newPassword: "",
+        newConfirmPassword: "",
+      })
     }
-  }, [user])
+  }, [user, reset])
 
   if (!user) {
     return (
       <div className="flex justify-center items-center p-8 text-slate-500 text-sm">
         Carregando informações do usuário...
       </div>
-    );
+    )
   }
 
   return (
@@ -115,20 +139,25 @@ export default function Profile() {
         <hr className="border-slate-100" />
         <div className="space-y-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-            Alterar Senha
+            Alterar Senha (Opcional)
           </h2>
           <div className="flex flex-col gap-1.5">
             <Controller
               name="oldPassword"
               control={control}
-              rules={{ required: "A senha atual é obrigatória" }}
+              rules={{
+                required: newPasswordValue
+                  ? "A senha atual é obrigatória para alterar a senha"
+                  : false,
+              }}
               render={({ field }) => (
                 <TextField className="w-full" variant="secondary">
                   <Label>Senha atual</Label>
                   <Input
                     {...field}
+                    type="password"
                     value={field.value || ""}
-                    placeholder="Digite a senha sua senha"
+                    placeholder="Digite sua senha atual"
                   />
                   {errors.oldPassword && (
                     <span className="text-xs text-red-500 mt-1">
@@ -145,12 +174,12 @@ export default function Profile() {
               <Controller
                 name="newPassword"
                 control={control}
-                rules={{ required: "A nova senha é obrigatória" }}
                 render={({ field }) => (
                   <TextField className="w-full" variant="secondary">
                     <Label>Nova Senha</Label>
                     <Input
                       {...field}
+                      type="password"
                       value={field.value || ""}
                       placeholder="Digite a nova senha"
                     />
@@ -166,20 +195,26 @@ export default function Profile() {
 
             <div className="flex flex-col gap-1.5">
               <Controller
-                name="newConfirmPasword"
+                name="newConfirmPassword"
                 control={control}
-                rules={{ required: "A confirmação é obrigatória" }}
+                rules={{
+                  validate: (value) =>
+                    !newPasswordValue ||
+                    value === newPasswordValue ||
+                    "As senhas não coincidem",
+                }}
                 render={({ field }) => (
                   <TextField className="w-full" variant="secondary">
                     <Label>Confirmar Nova Senha</Label>
                     <Input
                       {...field}
+                      type="password"
                       value={field.value || ""}
-                      placeholder="Digite a nova senha"
+                      placeholder="Confirme a nova senha"
                     />
-                    {errors.newConfirmPasword && (
+                    {errors.newConfirmPassword && (
                       <span className="text-xs text-red-500 mt-1">
-                        {errors.newConfirmPasword.message}
+                        {errors.newConfirmPassword.message}
                       </span>
                     )}
                   </TextField>
@@ -188,13 +223,17 @@ export default function Profile() {
             </div>
           </div>
         </div>
+
         <div className="flex justify-end pt-4">
-          <Button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-6">
+          <Button
+            type="submit"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-6"
+          >
             <Save className="size-4" />
             Salvar Alterações
           </Button>
         </div>
       </form>
     </div>
-  );
+  )
 }
