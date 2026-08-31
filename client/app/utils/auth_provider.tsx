@@ -11,12 +11,14 @@ interface User {
   id: number,
   email: string,
   role: string,
+  firstLogin: boolean
 }
 
 interface AuthContextDAt {
   user: User | null
   loading: boolean,
-  isAdmin: boolean
+  isAdmin: boolean,
+  firstLogin: boolean
 }
 
 const AuthContext = createContext<AuthContextDAt | null>(null)
@@ -44,12 +46,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [path, router])
 
   const isAdmin = user?.role === 'administrador' ? true : false
+  const firstLogin = user?.firstLogin ? true : false
   return (
     <AuthContext.Provider
       value={{
         user,
         loading,
-        isAdmin
+        isAdmin,
+        firstLogin,
       }}
     >
       {children}

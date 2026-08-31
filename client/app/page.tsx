@@ -10,6 +10,7 @@ import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
 import Metrics from "./components/dashboard/Metrics";
 import FiltersScheduling from './components/Filters'
+import { ModalFirstLogin } from "./components/ModalFirstLogin";
 
 export interface UserAuth {
   name: string | null,
@@ -27,7 +28,7 @@ const initialValues = { all: '', date: '', status: '', priority: '' }
 export default function Home() {
 
   //  ============= ESTADOS ===========
-  const { user, isAdmin }: UserAuth | any = useAuth()
+  const { user, isAdmin, firstLogin }: UserAuth | any = useAuth()
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
   const [rows, setRows] = useState<RowsProps[]>([])
   const [filter, setFilter] = useState(initialValues)
@@ -97,6 +98,12 @@ export default function Home() {
   // ============ HOOKS ==========
 
   useEffect(() => {
+    if (firstLogin) {
+      setModal({ open: true, type: 'login', data: null })
+    }
+  }, [firstLogin])
+
+  useEffect(() => {
     getSchedule()
   }, [])
 
@@ -149,6 +156,10 @@ export default function Home() {
         open={modal.open && modal.type === 'delete'}
         text="Deseja excluir o agendamento solicitado?"
         onClose={() => setModal({ open: false, type: '', data: null })}
+      />
+      <ModalFirstLogin
+        open={modal.open && modal.type === 'login'}
+        onClose={() => setModal({ open: false, data: null, type: '' })}
       />
     </div>
   );
