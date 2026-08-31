@@ -9,6 +9,7 @@ const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values (
 const sqlTechnician = `select u.id, u.nome from usuarios u where u.perfil = 'tecnico' order by u.perfil asc`
 const sqlUserPassword = `select senha from usuarios u where u.id = $1`
 const sqlUpdate = `update usuarios set nome = $1, email = $2, senha = $3, primeiro_acesso = $4 where id = $5`
+const sqlUpdateNotPassword = `update usuarios set nome = $1, email = $2 where id = $3`
 
 export async function allUsers() {
   try {
@@ -75,30 +76,47 @@ export async function getAllTechnician() {
 
 export async function updateProfileService(values) {
   let client = null
-  let transationStart = null
+  let transactionStart = null
   try {
 
     client = await db.connect()
-    client.query('BEGIN')
-    transationStart = true
+    await client.query('BEGIN')
+    transactionStart = true
 
-    const { id, email, name, oldPassword, newPassword, newConfirmPasword } = values
+    const { id, email, name, oldPassword, newPassword, newConfirmPassword } = values
 
-    if (newPassword != newConfirmPasword) return ErroResponse(400, 'Senhas não conferem', true)
-    const password = await db.query(sqlUserPassword, [id])
+    if (newPassword && newPassword !== newConfirmPassword) {
 
-    if (password.rowCount === 0) return ErroResponse(400, 'Dados não encontrados', true)
-    const passwordUser = password?.rows[0]?.senha
-    const compareSenha = await comparePassword(oldPassword, passwordUser)
+      return ErroResponse(400, 'As senhas não coincidem')
+    }
 
-    if (!compareSenha) return ErroResponse(400, 'A Senha atual não confere', true)
-    const passCripto = await gerarHash(newPassword)
+    if (oldPassword) {
+      const password = await client.query(sqlUserPassword, [id])
 
-    await client.query(sqlUpdate, [name, email, passCripto, false, id])
+      if (password.rowCount === 0) return ErroResponse(400, 'Dados não encontrados', true)
+
+      const passwordUser = password?.rows[0]?.senha
+
+      const compareSenha = await comparePassword(oldPassword, passwordUser)
+
+      if (!compareSenha) return ErroResponse(400, 'A Senha atual não confere', true)
+
+      const passCripto = await gerarHash(newPassword)
+
+      await client.query(sqlUpdate, [name, email, passCripto, false, id])
+
+      await client.query('COMMIT')
+      return ErroResponse(200, 'Dados atualizados com sucesso', false)
+    }
+
+    await client.query(sqlUpdateNotPassword, [name, email, id])
+
     await client.query('COMMIT')
+
     return ErroResponse(200, 'Dados atualizados com sucesso', false)
+
   } catch (error) {
-    if (transationStart) client.query('ROOLBACK')
+    if (transactionStart) await client.query('ROLLBACK')
     throw new Error(`Erro ao atualizar dados: ${error?.message}`)
   } finally {
     if (client) client.release()
