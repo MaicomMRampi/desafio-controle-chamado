@@ -68,13 +68,21 @@ export async function getTechnician(req, res) {
 
 export async function updateProfile(req, res) {
   try {
-    const { id, email, name, oldPassword, newPassword, newConfirmPasword } = req.body
+    const { email, name, oldPassword, newPassword, newConfirmPassword } = req.body
 
-    if (!email || !name || (oldPassword && (!newPassword || !newConfirmPasword))) {
-      return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    const id = req.user.id
+
+    if (!id) return res.status(401).json({ message: 'Usuário não autenticado' })
+
+    if (!email || !name) return res.status(400).json({ message: 'Nome, e email são obrigatórios' })
+
+    if (oldPassword && (!newPassword || !newConfirmPassword)) {
+
+      return res.status(400).json({ message: 'A nova senha e a confirmação são obrigatórias' })
     }
 
-    const response = await updateProfileService(req.body)
+    const response = await updateProfileService({ email, name, oldPassword, newPassword, newConfirmPassword, id })
+
     if (response.error) return res.status(response.code).json({ message: response.message })
 
     return res.status(200).json({ message: response.message || 'Dados atualizados com sucesso' })

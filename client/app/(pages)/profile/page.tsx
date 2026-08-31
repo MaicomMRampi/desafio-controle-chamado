@@ -30,15 +30,7 @@ export default function Profile() {
   const { user }: UserAuth | any = useAuth()
   const router = useRouter()
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<PropsForm>({
-    defaultValues: defaultValuesUser,
-  })
+  const { control, handleSubmit, reset, watch, formState: { errors }, } = useForm<PropsForm>({ defaultValues: defaultValuesUser, })
 
   const newPasswordValue = watch("newPassword")
 
@@ -46,7 +38,6 @@ export default function Profile() {
     try {
       const response = await api.put("/updateProfile", values)
       showSuccessToast(response?.data?.message)
-      router.push("/")
     } catch (error: any) {
       showErrorToast(error?.response?.data?.message)
       console.log(`Erro ao atualizar usuario: ${error?.response?.data?.message}`)
@@ -139,7 +130,7 @@ export default function Profile() {
         <hr className="border-slate-100" />
         <div className="space-y-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-            Alterar Senha (Opcional)
+            Alterar Senha
           </h2>
           <div className="flex flex-col gap-1.5">
             <Controller
@@ -183,11 +174,7 @@ export default function Profile() {
                       value={field.value || ""}
                       placeholder="Digite a nova senha"
                     />
-                    {errors.newPassword && (
-                      <span className="text-xs text-red-500 mt-1">
-                        {errors.newPassword.message}
-                      </span>
-                    )}
+                    {errors.newPassword && (<span className="text-xs text-red-500 mt-1">{errors.newPassword.message}</span>)}
                   </TextField>
                 )}
               />
@@ -197,12 +184,7 @@ export default function Profile() {
               <Controller
                 name="newConfirmPassword"
                 control={control}
-                rules={{
-                  validate: (value) =>
-                    !newPasswordValue ||
-                    value === newPasswordValue ||
-                    "As senhas não coincidem",
-                }}
+                rules={{ validate: (value) => !newPasswordValue || value === newPasswordValue || "As senhas não coincidem" }}
                 render={({ field }) => (
                   <TextField className="w-full" variant="secondary">
                     <Label>Confirmar Nova Senha</Label>
@@ -212,11 +194,7 @@ export default function Profile() {
                       value={field.value || ""}
                       placeholder="Confirme a nova senha"
                     />
-                    {errors.newConfirmPassword && (
-                      <span className="text-xs text-red-500 mt-1">
-                        {errors.newConfirmPassword.message}
-                      </span>
-                    )}
+                    {errors.newConfirmPassword && (<span className="text-xs text-red-500 mt-1">{errors.newConfirmPassword.message}</span>)}
                   </TextField>
                 )}
               />
@@ -224,7 +202,15 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-between pt-4">
+          <Button
+            onPress={() => router.back()}
+            type="submit"
+            className="bg-green-500 text-white font-medium px-6"
+          >
+            <Save className="size-4" />
+            Voltar
+          </Button>
           <Button
             type="submit"
             className="bg-slate-900 hover:bg-slate-800 text-white font-medium px-6"
