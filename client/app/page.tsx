@@ -12,6 +12,7 @@ import Metrics from "./components/dashboard/Metrics";
 import FiltersScheduling from './components/Filters'
 import { ModalFirstLogin } from "./components/ModalFirstLogin";
 import { showErrorToast, showSuccessToast } from "./components/toastDefault";
+import { useRouter } from "next/navigation";
 
 export interface UserAuth {
   name: string | null,
@@ -104,8 +105,10 @@ export default function Home() {
   // ============ HOOKS ==========
 
   useEffect(() => {
-    if (firstLogin) {
+    if (user?.firstLogin) {
       setModal({ open: true, type: 'login', data: null })
+    } else {
+      setModal({ open: false, data: null, type: '' })
     }
   }, [firstLogin])
 

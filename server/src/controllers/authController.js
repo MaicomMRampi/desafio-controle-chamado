@@ -1,4 +1,4 @@
-import { AuthLogin } from "../services/authService.js"
+import { AuthLogin, checkAuhId } from "../services/authService.js"
 import jwt from 'jsonwebtoken'
 
 export async function login(req, res) {
@@ -33,7 +33,8 @@ export async function login(req, res) {
 export async function checkAuth(req, res) {
   try {
     const dataUser = req.user
-    return res.status(200).json(dataUser)
+    const response = await checkAuhId(dataUser.id)
+    return res.status(200).json(response)
   } catch (error) {
 
     return res.status(500).json({ message: 'Erro ao consultar autenticação do usuário' })

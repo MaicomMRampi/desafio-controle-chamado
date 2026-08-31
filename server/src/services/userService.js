@@ -92,10 +92,10 @@ export async function updateProfileService(values) {
     const compareSenha = await comparePassword(oldPassword, passwordUser)
 
     if (!compareSenha) return ErroResponse(400, 'A Senha atual não confere', true)
-    const passCripto = gerarHash(newPassword)
+    const passCripto = await gerarHash(newPassword)
 
     await client.query(sqlUpdate, [name, email, passCripto, false, id])
-
+    await client.query('COMMIT')
     return ErroResponse(200, 'Dados atualizados com sucesso', false)
   } catch (error) {
     if (transationStart) client.query('ROOLBACK')
