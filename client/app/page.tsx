@@ -9,7 +9,7 @@ import { api } from "./lib/axiosInstance";
 import { DrawerScheduling } from "./components/dashboard/drawer";
 import DeleteModal from "./components/ModalDeleteDefault";
 import Metrics from "./components/dashboard/Metrics";
-import FiltersScheduling from './components/Filters'
+import FiltersScheduling from './components/dashboard/Filters'
 import { ModalFirstLogin } from "./components/ModalFirstLogin";
 import { showErrorToast, showSuccessToast } from "./components/toastDefault";
 import { useRouter } from "next/navigation";
@@ -34,8 +34,10 @@ export default function Home() {
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
   const [rows, setRows] = useState<RowsProps[]>([])
   const [filter, setFilter] = useState(initialValues)
-  const priorityFilter = rows?.map(i => i.priority)
-  const statuFilter = rows?.map(i => i.status)
+
+  const priorityFilter = [...new Set(rows?.map(i => i.priority))];
+  const statuFilter = [...new Set(rows?.map(i => i.status))];
+
   // ========= FUNÇÕES ==============
 
   async function saveShedule(values: PropsObj) {
@@ -77,6 +79,14 @@ export default function Home() {
     }
   }
 
+  async function updateStatus(process: string) {
+    try {
+      console.log(process)
+    } catch (error) {
+
+    }
+  }
+  // ================================
   function onChangeFilter(key: string, value: string) {
     setFilter(prev => ({
       ...prev,
@@ -158,6 +168,7 @@ export default function Home() {
         data={modal.data}
         open={modal.open && modal.type === 'details'}
         onClose={() => setModal({ open: false, type: '', data: null })}
+        onStatus={(value) => updateStatus(value)}
       />
       <DeleteModal
         onDelete={() => onConfirmDelete()}

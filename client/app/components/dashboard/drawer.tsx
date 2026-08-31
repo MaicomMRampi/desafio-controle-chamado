@@ -1,16 +1,21 @@
 "use client";
 
-import { Button, Chip, Drawer } from "@heroui/react";
+import { Button, Chip, Drawer, Label, ListBox, Select } from "@heroui/react";
 import { PropsObj } from "./ModalAddShedule";
 import { Priority, Status } from './chipStatus'
+import { STATUS_OPTIONS } from "./statusValues";
+import { useAuth } from "@/app/utils/auth_provider";
+import { UserAuth } from "@/app/page";
 
 interface PropsDrawer {
   open: boolean;
   onClose: () => void;
-  data: PropsObj | null;
+  data: PropsObj | null
+  onStatus: (value: string) => void
 }
 
-export function DrawerScheduling({ open, onClose, data }: PropsDrawer) {
+export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer) {
+  const { user }: UserAuth | any = useAuth()
   if (!data) return null;
 
   const formatDate = (dateString?: string, type?: number) => {
@@ -76,28 +81,52 @@ export function DrawerScheduling({ open, onClose, data }: PropsDrawer) {
                   </div>
                 </div>
               </div>
-
               <div className="rounded-xl bg-default-100 p-4 border border-default-200 space-y-3">
                 <h2 className="text-xs font-semibold text-gray-400 uppercase">
                   Histórico e Registro
                 </h2>
-
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <span className="text-xs text-gray-400 block">Data de Abertura</span>
                     <span className="text-foreground">{formatDate(data.openingDate, 1)}</span>
                   </div>
-                  {data.insertedDate && (
+                  {data.openingDate && (
                     <div>
                       <span className="text-xs text-gray-400 block">Registrado em</span>
-                      <span className="text-foreground">{formatDate(data.insertedDate)}</span>
+                      <span className="text-foreground">{formatDate(data.openingDate)}</span>
                     </div>
                   )}
                 </div>
               </div>
+              {user?.role != 'cliente' && (
+                <Select
+                  placeholder="Status"
+                  variant="secondary"
+                  className="w-full"
+                  onChange={(value) => onStatus(String(value))}
+                >
+                  <Label>Atualizar Status</Label>
+                  <Select.Trigger>
+                    <Select.Value />
+                    <Select.Indicator />
+                  </Select.Trigger>
+                  <Select.Popover>
+                    <ListBox>
+                      {STATUS_OPTIONS?.map((i: any, index: any) => (
+                        <ListBox.Item key={i.value} id={i.value} textValue={i.label}>
+                          {i.label}
+                          <ListBox.ItemIndicator />
+                        </ListBox.Item>
+                      ))}
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
+              )}
             </Drawer.Body>
-
             <Drawer.Footer className="border-t pt-4">
+              <Button className="w-full">
+                Concluir Atendimento
+              </Button>
               <Button variant="secondary" onClick={onClose} className="w-full">
                 Fechar
               </Button>

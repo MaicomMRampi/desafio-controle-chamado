@@ -3,13 +3,8 @@ import { saveSchedulingService, getScheduleUserForRole, deleteShedulingId } from
 export async function saveScheduling(req, res) {
   try {
     const idUser = req.user.id
-    for (const [field, value] of Object.entries(req.body)) {
-      if (field === 'id') continue
-      const isEmpty = value === null || value === ''
-      if (isEmpty) {
-        return res.status(400).json({ message: `Todos os campos são obrigatórios` })
-      }
-    }
+    const { title, description, client, priority } = req.body
+    if (!title || !description || !client || !priority) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
     const response = await saveSchedulingService({ values: req.body, idUser })
     return res.status(200).json({ message: 'Agendamento criado com sucesso !' })
   } catch (error) {

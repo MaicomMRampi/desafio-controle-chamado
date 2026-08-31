@@ -6,6 +6,8 @@ import { Headset } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { STATUS_OPTIONS } from './statusValues'
+import { useAuth } from "@/app/utils/auth_provider";
+import { UserAuth } from "@/app/page";
 
 interface PaperProps {
   open: boolean,
@@ -22,7 +24,6 @@ export interface PropsObj {
   status: string,
   priority: string,
   openingDate?: string
-  insertedDate?: string | null,
   tecnicianName?: string
 }
 
@@ -43,9 +44,11 @@ const defaultValues: PropsObj = {
 }
 
 export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
+  const { user, isAdmin }: UserAuth | any = useAuth()
   const { control, handleSubmit, reset, formState: { errors } } = useForm<PropsObj>({ defaultValues })
   const [data, setData] = useState([])
   const [technicians, setThecnicians] = useState<Tecnhicians[]>([])
+
 
   async function getAllPriority() {
     try {
@@ -153,76 +156,44 @@ export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
                       </TextField>
                     )}
                   />
-                  <Controller
-                    name="technician_id"
-                    control={control}
-                    rules={{ required: "O técnico é obrigatório" }}
-                    render={({ field }) => (
-                      <Select
-                        value={field.value || ''}
-                        onChange={(key) => field.onChange(key)}
-                        placeholder="Técnico"
-                        variant="secondary"
-                        className="w-full"
-                      >
-                        <Label>Técnico Responsável</Label>
-                        <Select.Trigger>
-                          <Select.Value />
-                          <Select.Indicator />
-                        </Select.Trigger>
-                        <Select.Popover>
-                          <ListBox>
-                            {technicians?.map((i: any, index: any) => (
-                              <ListBox.Item key={i.id} id={i.id} textValue={i.nome}>
-                                {i.nome}
-                                <ListBox.ItemIndicator />
-                              </ListBox.Item>
-                            ))}
-                          </ListBox>
-                        </Select.Popover>
-                        {errors.technician_id && (
-                          <span className="text-xs text-red-500 mt-1">
-                            {errors.technician_id.message}
-                          </span>
-                        )}
-                      </Select>
-                    )}
-                  />
-                  <Controller
-                    name="status"
-                    control={control}
-                    rules={{ required: "O status é obrigatório" }}
-                    render={({ field }) => (
-                      <Select
-                        value={field.value !== null ? String(field.value) : ""}
-                        onChange={(key) => field.onChange(key)}
-                        placeholder="Status"
-                        variant="secondary"
-                        className="w-full"
-                      >
-                        <Label>Status chamado</Label>
-                        <Select.Trigger>
-                          <Select.Value />
-                          <Select.Indicator />
-                        </Select.Trigger>
-                        <Select.Popover>
-                          <ListBox>
-                            {STATUS_OPTIONS?.map((i: any, index: any) => (
-                              <ListBox.Item key={i.value} id={i.value} textValue={i.label}>
-                                {i.label}
-                                <ListBox.ItemIndicator />
-                              </ListBox.Item>
-                            ))}
-                          </ListBox>
-                        </Select.Popover>
-                        {errors.status && (
-                          <span className="text-xs text-red-500 mt-1">
-                            {errors.status.message}
-                          </span>
-                        )}
-                      </Select>
-                    )}
-                  />
+                  {isAdmin && (
+                    <Controller
+                      name="technician_id"
+                      control={control}
+                      rules={{ required: "O técnico é obrigatório" }}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || ''}
+                          onChange={(key) => field.onChange(key)}
+                          placeholder="Técnico"
+                          variant="secondary"
+                          className="w-full"
+                        >
+                          <Label>Técnico Responsável</Label>
+                          <Select.Trigger>
+                            <Select.Value />
+                            <Select.Indicator />
+                          </Select.Trigger>
+                          <Select.Popover>
+                            <ListBox>
+                              {technicians?.map((i: any, index: any) => (
+                                <ListBox.Item key={i.id} id={i.id} textValue={i.nome}>
+                                  {i.nome}
+                                  <ListBox.ItemIndicator />
+                                </ListBox.Item>
+                              ))}
+                            </ListBox>
+                          </Select.Popover>
+                          {errors.technician_id && (
+                            <span className="text-xs text-red-500 mt-1">
+                              {errors.technician_id.message}
+                            </span>
+                          )}
+                        </Select>
+                      )}
+                    />
+
+                  )}
                   <Controller
                     name="priority"
                     control={control}
@@ -258,28 +229,7 @@ export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
                       </Select>
                     )}
                   />
-                  <Controller
-                    name="openingDate"
-                    control={control}
-                    rules={{ required: "A data de abertura é obrigatória" }}
-                    render={({ field }) => (
-                      <TextField className="w-full" variant="secondary">
-                        <Label>Data de Abertura</Label>
-                        <Input
-                          {...field}
-                          type="date"
-                          maxLength={40}
-                          value={field.value || ''}
-                          placeholder="Data de Abertura"
-                        />
-                        {errors.openingDate && (
-                          <span className="text-xs text-red-500 mt-1">
-                            {errors.openingDate.message}
-                          </span>
-                        )}
-                      </TextField>
-                    )}
-                  />
+
                   <Controller
                     name="description"
                     control={control}
@@ -315,9 +265,9 @@ export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
                   />
                   <Modal.Footer>
                     <Button slot="close" variant="secondary">
-                      Cancel
+                      fechar
                     </Button>
-                    <Button type="submit">Send Message</Button>
+                    <Button type="submit">Criar agendamento</Button>
                   </Modal.Footer>
                 </form>
               </Surface>
