@@ -6,6 +6,7 @@ import { api } from "@/app/lib/axiosInstance";
 import { Button, Chip, Table } from "@heroui/react";
 import { Pencil, UserRoundX } from 'lucide-react';
 import { useEffect, useState } from "react";
+import { showErrorToast, showSuccessToast } from "../toastDefault";
 
 interface PropsStateModal {
   open: boolean;
@@ -42,7 +43,8 @@ export default function AdminPage() {
         setUsers(response.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.message}`);
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
     }
   }
 
@@ -50,11 +52,13 @@ export default function AdminPage() {
     try {
       const response = await api.delete(`/deleteUser?id=${modal.data.id}`)
       if (response.status === 200) {
+        showSuccessToast(response?.data?.message)
         getAllUsers()
         setModal({ ...modal, open: false })
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao deletar usuário: ${error?.message}`);
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao deletar usuário: ${error?.response?.data?.message}`);
     }
   }
 
@@ -62,11 +66,13 @@ export default function AdminPage() {
     try {
       const response = modal.type === 'new' ? await api.post('/newUser', data) : await api.put('/editUser', data)
       if (response.status === 200) {
+        showSuccessToast(response?.data?.message)
         getAllUsers()
         setModal({ ...modal, open: false })
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao criar usuário: ${error?.message}`);
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao criar usuário: ${error?.response?.data?.message}`);
     }
   }
   useEffect(() => {

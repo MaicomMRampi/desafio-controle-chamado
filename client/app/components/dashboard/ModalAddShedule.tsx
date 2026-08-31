@@ -54,7 +54,7 @@ export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
         setData(response.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.message}`);
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
     }
   }
 
@@ -65,7 +65,7 @@ export function ModalAddShedule({ open, onClose, onSave }: PaperProps) {
         setThecnicians(response.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.message}`);
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
     }
   }
   useEffect(() => {

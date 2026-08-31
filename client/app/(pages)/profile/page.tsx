@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { api } from "@/app/lib/axiosInstance";
 import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault";
+import { useRouter } from "next/navigation";
 
 interface PropsForm {
   name?: string,
@@ -22,11 +23,12 @@ const defaultValuesUser = { name: '', email: '', oldPassword: '', newPassword: '
 export default function Profile() {
   const { user }: UserAuth | any = useAuth();
   const { control, handleSubmit, reset, formState: { errors } } = useForm<PropsForm>({ defaultValues: defaultValuesUser })
-
+  const router = useRouter()
   async function updateUser(values: any) {
     try {
       const response = await api.put('/updateProfile', values)
       showSuccessToast(response?.data?.message)
+      router.push('/')
     } catch (error: any | unknown) {
       showErrorToast(error?.response?.data?.message)
       console.log(`Erro ao atualizar usuario: ${error?.response?.data?.message}`)

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 import DeleteModal from "@/app/components/ModalDeleteDefault";
 import NewStatus, { PropsModal } from "../ModalNewStatus";
+import { showErrorToast, showSuccessToast } from "../toastDefault";
 
 interface PropsStateModal {
   open: boolean;
@@ -44,7 +45,7 @@ export default function Priority() {
         setData(response.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.message}`);
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
     }
   }
 
@@ -52,11 +53,13 @@ export default function Priority() {
     try {
       const responseSave = await api.post('/newPriority', description)
       if (responseSave.status === 200) {
+        showSuccessToast(responseSave?.data?.message)
         getAllPriority()
         setModal({ ...modal, open: false })
       }
-    } catch (error) {
-      console.log(`Erro ao salvar prioridade do atendimento`)
+    } catch (error: any | unknown) {
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao salvar prioridade do atendimento ${error?.response?.data?.message}`)
     }
   }
 
@@ -64,11 +67,13 @@ export default function Priority() {
     try {
       const responseDelete = await api.delete(`/deletePriority?id=${modal.data.id}`,)
       if (responseDelete.status === 200) {
+        showSuccessToast(responseDelete?.data?.message)
         getAllPriority()
         setModal({ ...modal, open: false })
       }
-    } catch (error) {
-      console.log(`${error}`)
+    } catch (error: any | unknown) {
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao deletar status: ${error}`)
     }
   }
   useEffect(() => {

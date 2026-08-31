@@ -1,5 +1,6 @@
 "use client";
 
+import { showErrorToast, showSuccessToast } from "@/app/components/toastDefault";
 import { api } from "@/app/lib/axiosInstance";
 import { Avatar, Button, Input } from "@heroui/react";
 import { useRouter } from "next/navigation";
@@ -20,11 +21,12 @@ export default function Login() {
     try {
       const response = await api.post("/login", data)
       if (response.status === 200) {
+        showSuccessToast(response?.data?.message)
         router.push('/')
       }
     } catch (error: undefined | any) {
-      console.log("🚀 ~ onSubmitForm ~ error:", error.response)
-      console.log('Erro ao fazer login', error?.message || error);
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao fazer login', ${error?.response?.data?.message}`);
     }
   }
 

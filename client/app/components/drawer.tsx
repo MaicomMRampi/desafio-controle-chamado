@@ -15,6 +15,7 @@ import {
   PhoneIncoming
 } from "lucide-react";
 import { useAuth } from "../utils/auth_provider";
+import { showErrorToast, showSuccessToast } from "./toastDefault";
 
 interface NavigationItem {
   label: string;
@@ -38,10 +39,12 @@ export default function Navigation() {
     try {
       const response = await api.post('/logout');
       if (response.status === 200) {
+        showSuccessToast(response?.data?.message)
         router.push('/login');
       }
-    } catch (error: any) {
-      console.error("Erro ao deslogar:", error?.message);
+    } catch (error: any | unknown) {
+      showErrorToast(error?.response?.data?.message)
+      console.error("Erro ao deslogar:", error?.response?.data?.message);
     }
   }
 

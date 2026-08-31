@@ -11,6 +11,7 @@ import DeleteModal from "./components/ModalDeleteDefault";
 import Metrics from "./components/dashboard/Metrics";
 import FiltersScheduling from './components/Filters'
 import { ModalFirstLogin } from "./components/ModalFirstLogin";
+import { showErrorToast, showSuccessToast } from "./components/toastDefault";
 
 export interface UserAuth {
   name: string | null,
@@ -40,11 +41,13 @@ export default function Home() {
     try {
       const responseSave = await api.post(`/saveScheduling`, values)
       if (responseSave.status === 200) {
+        showSuccessToast(responseSave?.data?.message)
         setModal({ open: false, type: '', data: null })
         getSchedule()
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao criar agendamento: ${error?.message}`)
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao criar agendamento: ${error?.response?.data?.message}`)
     }
   }
 
@@ -55,18 +58,21 @@ export default function Home() {
         setRows(responseSave.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar agendamento: ${error?.message}`)
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao buscar agendamento: ${error?.response?.data?.message}`)
     }
   }
 
   async function onConfirmDelete() {
     try {
-      const responseSave = await api.delete(`/delete?id=${modal.data?.id}`)
-      if (responseSave.status === 200) {
+      const responseDelete = await api.delete(`/delete?id=${modal.data?.id}`)
+      if (responseDelete.status === 200) {
+        showSuccessToast(responseDelete?.data?.message)
         getSchedule()
       }
-    } catch (error) {
-      console.log(`Erro ao exluir atendimento`)
+    } catch (error: any | unknown) {
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao exluir atendimento ${error?.response?.data?.message}`)
     }
   }
 
