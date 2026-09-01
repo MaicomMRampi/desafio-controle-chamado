@@ -1,4 +1,4 @@
-import { saveSchedulingService, getScheduleUserForRole, deleteShedulingId, updateSchedulingId, updateSituationService } from '../services/schedulingService.js'
+import { saveSchedulingService, getScheduleUserForRole, deleteShedulingId, updateSchedulingId, updateSituationService, saveNoteService, getMessagesService } from '../services/schedulingService.js'
 
 export async function saveScheduling(req, res) {
   try {
@@ -69,6 +69,35 @@ export async function updateSituation(req, res) {
     if (!value || !type || !id) return res.status(400).json({ message: 'Erro ao realizar ação, tipo e valor são obrigatórios' })
     const response = await updateSituationService({ value, type, id })
     return res.status(response.code).json({ message: response.message })
+  } catch (error) {
+    console.log(`Erro ao atualizar agendamento: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })
+  }
+}
+
+export async function saveNote(req, res) {
+  try {
+    const { id, technician_id, clientId } = req.body.data
+    const { type, message } = req.body
+    const idUser = req.user.id
+    if (!id || !idUser || !type || !message) return res.status(400).json({ message: 'Erro ao inserir, valores faltantes para concluir a operação' })
+
+    const response = await saveNoteService({ id, idUser, type, message })
+
+    return res.status(response.code).json({ message: response.message })
+  } catch (error) {
+    console.log(`Erro ao atualizar agendamento: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })
+  }
+}
+
+export async function getMessages(req, res) {
+  try {
+    const id = req.query.id
+    const idUser = req.user.id
+    if (!id) return res.status(400).json({ message: 'O id é obrigaório' })
+    const response = await getMessagesService({ id, idUser })
+    return res.status(200).json(response)
   } catch (error) {
     console.log(`Erro ao atualizar agendamento: ${error?.message}`)
     return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })

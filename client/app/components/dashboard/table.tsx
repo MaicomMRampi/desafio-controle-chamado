@@ -2,7 +2,7 @@
 
 import type { SortDescriptor } from "@heroui/react";
 import { Button, Table } from "@heroui/react";
-import { Edit, Eye, Trash2 } from "lucide-react";
+import { Edit, Eye, Mail, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Status, Priority } from './chipStatus'
 import { UserAuth } from '../../page'
@@ -27,9 +27,10 @@ interface Rows {
   onView: (data: RowsProps) => void,
   onDelete: (data: RowsProps) => void
   onEdit: (data: RowsProps) => void
+  onMessage: (data: RowsProps) => void
 }
 
-export default function TableHome({ rows, onView, onDelete, onEdit }: Rows) {
+export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }: Rows) {
   const { user, isAdmin }: UserAuth | any = useAuth()
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -105,26 +106,31 @@ export default function TableHome({ rows, onView, onDelete, onEdit }: Rows) {
               </Table.Column>
             </Table.Header>
             <Table.Body>
-              {rows.map((user) => (
-                <Table.Row key={user.id} id={user.id}>
-                  <Table.Cell>{user.id}</Table.Cell>
-                  <Table.Cell><Status value={user.status} /></Table.Cell>
-                  <Table.Cell>{user.client}</Table.Cell>
-                  <Table.Cell>{user.title}</Table.Cell>
-                  <Table.Cell>{user.tecnicianName}</Table.Cell>
-                  <Table.Cell><Priority value={user.priority} /></Table.Cell>
-                  <Table.Cell>{user.openingDate ? new Date(user.openingDate).toLocaleDateString("pt-br") : '-'}</Table.Cell>
+              {rows.map((row) => (
+                <Table.Row key={row.id} id={row.id}>
+                  <Table.Cell>{row.id}</Table.Cell>
+                  <Table.Cell><Status value={row.status} /></Table.Cell>
+                  <Table.Cell>{row.client}</Table.Cell>
+                  <Table.Cell>{row.title}</Table.Cell>
+                  <Table.Cell>{row.tecnicianName}</Table.Cell>
+                  <Table.Cell><Priority value={row.priority} /></Table.Cell>
+                  <Table.Cell>{row.openingDate ? new Date(row.openingDate).toLocaleDateString("pt-br") : '-'}</Table.Cell>
                   <Table.Cell>
                     <div className="flex gap-3">
-                      <Button onPress={() => onView(user)} isIconOnly variant="ghost">
+                      {['administrador', 'cliente'].includes(user?.role) && (
+                        <Button onPress={() => onMessage(row)} isIconOnly variant="ghost">
+                          <Mail />
+                        </Button>
+                      )}
+                      <Button onPress={() => onView(row)} isIconOnly variant="ghost">
                         <Eye className="text-blue-600" />
                       </Button>
                       {isAdmin && (
                         <>
-                          <Button onPress={() => onEdit(user)} isIconOnly variant="ghost">
+                          <Button onPress={() => onEdit(row)} isIconOnly variant="ghost">
                             <Edit className="text-orange-600" />
                           </Button>
-                          <Button onPress={() => onDelete(user)} isIconOnly variant="ghost">
+                          <Button onPress={() => onDelete(row)} isIconOnly variant="ghost">
                             <Trash2 className="text-red-500" />
                           </Button>
                         </>

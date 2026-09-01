@@ -8,6 +8,7 @@ import { useAuth } from "@/app/utils/auth_provider";
 import { UserAuth } from "@/app/page";
 import { useEffect, useState } from "react";
 import { api } from "@/app/lib/axiosInstance";
+import { showErrorToast } from "../toastDefault";
 
 interface PropsDrawer {
   open: boolean;
@@ -30,6 +31,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
   const { user }: UserAuth | any = useAuth()
   const [dataPriority, setDataPriority] = useState<PropsData[]>([])
   const [updateState, setUpdateState] = useState<UpdateProps>({ priority: '', status: '' })
+  const [message, setMessage] = useState('')
 
   const formatDate = (dateString?: string, type?: number) => {
     if (!dateString) return "-";
@@ -54,6 +56,16 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
       }
     } catch (error: any | unknown) {
       console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
+    }
+  }
+
+  async function saveNote(type: string) {
+    try {
+      if (message.length === 0) return showErrorToast('O campo da mensagem é obrigatório')
+      const response = await api.post('/saveNote', { message, type, data })
+    } catch (error: any) {
+      showErrorToast(error?.response?.data?.message)
+      console.log(`Erro ao salvar mensagem, ${error?.message}`)
     }
   }
 
@@ -221,10 +233,10 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                   <h1>Histórico de mensagens</h1>
                   <div className="h-100 overflow-y-auto max-h-100 border rounded-2xl border-blue-900 my-2">
                   </div>
-                  <TextArea placeholder="Digite aqui a mensagem ou a solução" className={"w-full"} rows={4} variant="secondary" />
+                  <TextArea maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Digite aqui a mensagem ou a solução" className={"w-full"} rows={4} variant="secondary" />
                   <div className="w-full flex justify-between my-4">
-                    <Button className={"bg-amber-500"}>Salvar nota interna</Button>
-                    <Button>Enviar Mensagem ao cliente</Button>
+                    <Button className={"bg-amber-500"} onPress={() => saveNote('interna')}>Salvar nota interna</Button>
+                    <Button onPress={() => saveNote('publica')}>Enviar Mensagem ao cliente</Button>
                   </div>
                 </Tabs.Panel>
               </Tabs>

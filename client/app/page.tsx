@@ -12,6 +12,7 @@ import Metrics from "./components/dashboard/Metrics";
 import FiltersScheduling from './components/dashboard/Filters'
 import { ModalFirstLogin } from "./components/ModalFirstLogin";
 import { showErrorToast, showSuccessToast } from "./components/toastDefault";
+import { ModalMessage } from "./components/dashboard/ModalMessage";
 
 export interface UserAuth {
   name: string | null,
@@ -33,7 +34,6 @@ export default function Home() {
   const [modal, setModal] = useState<ModalProps>({ open: false, type: '', data: null })
   const [rows, setRows] = useState<RowsProps[]>([])
   const [filter, setFilter] = useState(initialValues)
-
   const priorityFilter = [...new Set(rows?.map(i => i.priority))];
   const statuFilter = [...new Set(rows?.map(i => i.status))];
 
@@ -167,6 +167,8 @@ export default function Home() {
         rows={filteredRows}
         onView={(data) => setModal({ open: true, type: 'details', data: data })}
         onDelete={(value) => setModal({ open: true, type: 'delete', data: value })}
+        onMessage={(value) => setModal({ open: true, type: 'message', data: value })}
+
       />
       <ModalAddShedule
         open={modal.open && modal.type === 'new'}
@@ -189,6 +191,11 @@ export default function Home() {
       />
       <ModalFirstLogin
         open={modal.open && modal.type === 'login'}
+        onClose={() => setModal({ open: false, data: null, type: '' })}
+      />
+      <ModalMessage
+        id={Number(modal.data?.id)}
+        open={modal.open && modal.type === 'message'}
         onClose={() => setModal({ open: false, data: null, type: '' })}
       />
     </div>
