@@ -46,12 +46,25 @@ create table if not exists agendamento (
   usuario_responsavel_id int references usuarios(id)
   )
 `
+const messages =
+  `
+create table agendamento_mensagens (
+    id int generated always as identity primary key,
+    id_agendamento int not null,
+    id_usuario_autor int not null,
+    tipo_mensagem varchar(20) not null,
+    mensagem text not null,
+    inserido_em timestamp default current_timestamp
+)
+
+
+`
 
 export default async function TablesDatabase() {
 
   let transationStart = false
   let client = null
-  const tables = [users, priority, priorityValues, shedulingSql]
+  const tables = [users, priority, priorityValues, shedulingSql, messages]
 
   try {
     client = await db.connect()

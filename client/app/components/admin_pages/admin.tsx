@@ -7,6 +7,7 @@ import { Button, Chip, Table } from "@heroui/react";
 import { Pencil, UserRoundX } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { showErrorToast, showSuccessToast } from "../toastDefault";
+import { useAuth } from "@/app/utils/auth_provider";
 
 interface PropsStateModal {
   open: boolean;
@@ -16,15 +17,17 @@ interface PropsStateModal {
 
 interface ProposIcons {
   onChange: (action: { type: 'edit' | 'delete' | 'new' }) => void;
+  id?: number;
+  idUserLogin?: number;
 }
 
-const Icons = ({ onChange }: ProposIcons) => {
+const Icons = ({ onChange, id, idUserLogin }: ProposIcons) => {
   return (
     <div className="flex gap-5">
       <Button onPress={() => onChange({ type: 'edit' })} variant="outline" isIconOnly>
         <Pencil size={30} />
       </Button>
-      <Button onPress={() => onChange({ type: 'delete' })} variant="danger-soft" isIconOnly>
+      <Button isDisabled={id === idUserLogin} onPress={() => onChange({ type: 'delete' })} variant="danger-soft" isIconOnly>
         <UserRoundX size={30} />
       </Button>
     </div>
@@ -35,6 +38,7 @@ export default function AdminPage() {
 
   const [modal, setModal] = useState<PropsStateModal>({ open: false, data: {}, type: null })
   const [users, setUsers] = useState<PropsModal[]>([])
+  const {user} : null | any = useAuth() 
 
   async function getAllUsers() {
     try {
@@ -108,21 +112,21 @@ export default function AdminPage() {
               </Table.Column>
             </Table.Header>
             <Table.Body>
-              {users.map((user) => (
-                <Table.Row key={user.id}>
-                  <Table.Cell>{user.name}</Table.Cell>
-                  <Table.Cell>{user.role}</Table.Cell>
+              {users.map((use) => (
+                <Table.Row key={use.id}>
+                  <Table.Cell>{use.name}</Table.Cell>
+                  <Table.Cell>{use.role}</Table.Cell>
                   <Table.Cell>
-                    <Chip color={user.status ? "success" : "danger"} size="sm" variant="soft">
-                      {user.status ? "Ativo" : "Inativo"}
+                    <Chip color={use.status ? "success" : "danger"} size="sm" variant="soft">
+                      {use.status ? "Ativo" : "Inativo"}
                     </Chip>
                   </Table.Cell>
                   <Table.Cell>
-                    <Icons onChange={(action) => {
+                    <Icons id={Number(use?.id)} idUserLogin={Number(user?.id)} onChange={(action) => {
                       if (action.type === 'edit') {
-                        setModal({ open: true, data: user, type: 'edit' });
+                        setModal({ open: true, data: use, type: 'edit' });
                       } else if (action.type === 'delete') {
-                        setModal({ open: true, data: user, type: 'delete' });
+                        setModal({ open: true, data: use, type: 'delete' });
                       }
                     }} />
                   </Table.Cell>
