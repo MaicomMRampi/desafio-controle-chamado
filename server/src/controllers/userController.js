@@ -1,4 +1,4 @@
-import { allUsers, deleteUserId, newUserSyst, updateUser, getAllTechnician, updateProfileService } from "../services/userService.js";
+import { allUsers, deleteUserId, newUserSyst, updateUser, getUsersService, updateProfileService } from "../services/userService.js";
 
 export async function getAllUsers(req, res) {
   try {
@@ -55,14 +55,14 @@ export async function newUser(req, res) {
   }
 }
 
-export async function getTechnician(req, res) {
+export async function getUsers(req, res) {
   try {
-    const response = await getAllTechnician(req.body)
+    const response = await getUsersService()
     return res.status(200).json(response)
   } catch (error) {
-    console.log(`Erro ao buscar técnicos': ${error?.message}`)
+    console.log(`Erro ao usuários': ${error?.message}`)
 
-    return res.status(500).json({ message: `Erro ao buscar técnicos :${error?.message}` })
+    return res.status(500).json({ message: `Erro ao usuários :${error?.message}` })
   }
 }
 

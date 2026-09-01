@@ -11,8 +11,8 @@ import { useAuth } from "@/app/utils/auth_provider";
 export interface RowsProps {
   id: number,
   client: string
+  client_id?: number
   description: string
-  insertedDate: string
   openingDate: string
   status: string
   technician: string
@@ -26,9 +26,10 @@ interface Rows {
   rows: RowsProps[]
   onView: (data: RowsProps) => void,
   onDelete: (data: RowsProps) => void
+  onEdit: (data: RowsProps) => void
 }
 
-export default function TableHome({ rows, onView, onDelete }: Rows) {
+export default function TableHome({ rows, onView, onDelete, onEdit }: Rows) {
   const { user, isAdmin }: UserAuth | any = useAuth()
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -120,7 +121,7 @@ export default function TableHome({ rows, onView, onDelete }: Rows) {
                       </Button>
                       {isAdmin && (
                         <>
-                          <Button onPress={() => onDelete(user)} isIconOnly variant="ghost">
+                          <Button onPress={() => onEdit(user)} isIconOnly variant="ghost">
                             <Edit className="text-orange-600" />
                           </Button>
                           <Button onPress={() => onDelete(user)} isIconOnly variant="ghost">

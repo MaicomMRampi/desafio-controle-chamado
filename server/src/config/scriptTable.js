@@ -37,16 +37,14 @@ create table if not exists agendamento (
   id int generated always as identity primary key,
   titulo varchar(100) not null,
   descricao text not null,
-  cliente varchar(100) not null,
+  cliente_id int references usuarios (id) not null,
   tecnico_id int references usuarios(id),
   status varchar(50) not null default 'Aberto',
   prioridade varchar(50) not null,
   ativo boolean default true, 
   data_abertura timestamp default current_timestamp,
-  criado_em timestamp default current_timestamp,
   usuario_responsavel_id int references usuarios(id)
   )
-)
 `
 
 export default async function TablesDatabase() {

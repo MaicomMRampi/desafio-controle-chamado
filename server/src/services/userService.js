@@ -6,11 +6,18 @@ const sqlGetAllUsers = `select u.nome as name,  u.id, u.email, u.status, u.perfi
 const sqlDeleteUser = `delete from usuarios where id = $1 `
 const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3 where id = $4`
 const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values ($1, $2, $3, $4)`
-const sqlTechnician = `select u.id, u.nome from usuarios u where u.perfil = 'tecnico' order by u.perfil asc`
 const sqlUserPassword = `select senha from usuarios u where u.id = $1`
 const sqlUpdate = `update usuarios set nome = $1, email = $2, senha = $3, primeiro_acesso = $4 where id = $5`
 const sqlUpdateNotPassword = `update usuarios set nome = $1, email = $2 where id = $3`
-
+const sqlUsers = `
+SELECT 
+  perfil,
+  jsonb_agg(jsonb_build_object('id', id, 'nome', nome) ORDER BY nome) AS usuarios
+FROM usuarios
+WHERE status IS TRUE 
+  AND perfil IN ('tecnico', 'cliente')
+GROUP BY perfil
+`
 export async function allUsers() {
   try {
     return (await db.query(sqlGetAllUsers)).rows
@@ -66,9 +73,9 @@ export async function newUserSyst(values) {
   }
 }
 
-export async function getAllTechnician() {
+export async function getUsersService() {
   try {
-    return (await db.query(sqlTechnician)).rows
+    return (await db.query(sqlUsers)).rows
   } catch (error) {
     throw new Error(`Erro ao buscar técnicos: ${error?.message}`)
   }

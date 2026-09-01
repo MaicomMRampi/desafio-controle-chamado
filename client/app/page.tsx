@@ -12,7 +12,6 @@ import Metrics from "./components/dashboard/Metrics";
 import FiltersScheduling from './components/dashboard/Filters'
 import { ModalFirstLogin } from "./components/ModalFirstLogin";
 import { showErrorToast, showSuccessToast } from "./components/toastDefault";
-import { useRouter } from "next/navigation";
 
 export interface UserAuth {
   name: string | null,
@@ -42,7 +41,12 @@ export default function Home() {
 
   async function saveShedule(values: PropsObj) {
     try {
-      const responseSave = await api.post(`/saveScheduling`, values)
+      let responseSave = null
+      if (values?.id) {
+        responseSave = await api.put(`/editScheduling`, values)
+      } else {
+        responseSave = await api.post(`/saveScheduling`, values)
+      }
       if (responseSave.status === 200) {
         showSuccessToast(responseSave?.data?.message)
         setModal({ open: false, type: '', data: null })
@@ -70,6 +74,7 @@ export default function Home() {
     try {
       const responseDelete = await api.delete(`/delete?id=${modal.data?.id}`)
       if (responseDelete.status === 200) {
+        setModal({ open: false, data: null, type: '' })
         showSuccessToast(responseDelete?.data?.message)
         getSchedule()
       }
@@ -155,6 +160,7 @@ export default function Home() {
         )}
       </div>
       <TableHome
+        onEdit={(data) => setModal({ open: true, type: 'new', data: data })}
         rows={filteredRows}
         onView={(data) => setModal({ open: true, type: 'details', data: data })}
         onDelete={(value) => setModal({ open: true, type: 'delete', data: value })}
@@ -163,6 +169,7 @@ export default function Home() {
         open={modal.open && modal.type === 'new'}
         onClose={() => setModal({ open: false, type: '', data: null })}
         onSave={(values) => saveShedule(values)}
+        valuesOnEdit={modal.data}
       />
       <DrawerScheduling
         data={modal.data}
