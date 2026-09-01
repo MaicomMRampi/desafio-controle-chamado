@@ -57,6 +57,9 @@ const getScheduling =
 const inactiveScheduling = `update agendamento set ativo = false where id = $1`
 const updateScheduling = `update agendamento set status = $1, tecnico_id = $2, prioridade = $3 where id = $4`
 
+const updateStatus = `update agendamento set status = $1 where id = $2`
+const updatePriority = `update agendamento set prioridade = $1 where id = $2`
+
 export async function saveSchedulingService(values) {
   try {
     const { title, description, idClient, priority, idUser, technician_id = null } = values
@@ -91,6 +94,20 @@ export async function updateSchedulingId(values) {
     const { id, status, technician_id = null, priority } = values
     const result = await db.query(updateScheduling, [status, technician_id, priority, id])
     if (result.rowCount === 0) return ErroResponse(400, 'Agendamento não encontrado', true)
+    return { code: 200, message: 'Agendamento atualizado com sucesso!', error: false }
+  } catch (error) {
+    console.log(`Erro ao atualizar agendamento ${error?.message}`)
+    throw new Error(`Erro ao atualizar agendamento: ${error?.message}`)
+  }
+}
+
+export async function updateSituationService(values) {
+  try {
+    const { value, type, id } = values
+    let sql = null
+    if (type === 'priority') sql = updatePriority
+    if (type === 'status') sql = updateStatus
+    const result = await db.query(sql, [value, id])
     return { code: 200, message: 'Agendamento atualizado com sucesso!', error: false }
   } catch (error) {
     console.log(`Erro ao atualizar agendamento ${error?.message}`)

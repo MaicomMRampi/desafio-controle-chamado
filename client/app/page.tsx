@@ -84,11 +84,14 @@ export default function Home() {
     }
   }
 
-  async function updateStatus(process: string) {
+  async function updateStatus(value: string, type: string, id: number) {
     try {
-      console.log(process)
-    } catch (error) {
-
+      const response = await api.put('/updateStatus', { value, type, id })
+      getSchedule()
+      showSuccessToast(response?.data?.message)
+    } catch (error: any | unknown) {
+      console.log(`Erro ao realizar ação: ${error?.message}`)
+      showErrorToast(error?.response?.data?.message)
     }
   }
   // ================================
@@ -175,7 +178,7 @@ export default function Home() {
         data={modal.data}
         open={modal.open && modal.type === 'details'}
         onClose={() => setModal({ open: false, type: '', data: null })}
-        onStatus={(value) => updateStatus(value)}
+        onStatus={(value, type, id) => updateStatus(value, type, id)}
       />
       <DeleteModal
         onDelete={() => onConfirmDelete()}

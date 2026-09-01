@@ -1,4 +1,4 @@
-import { saveSchedulingService, getScheduleUserForRole, deleteShedulingId, updateSchedulingId } from '../services/schedulingService.js'
+import { saveSchedulingService, getScheduleUserForRole, deleteShedulingId, updateSchedulingId, updateSituationService } from '../services/schedulingService.js'
 
 export async function saveScheduling(req, res) {
   try {
@@ -56,6 +56,18 @@ export async function updateScheduling(req, res) {
     if (!id || !status || !priority) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
     const response = await updateSchedulingId({ id, status, technician_id, priority })
     if (response.error) return res.status(response.code).json({ message: response.message })
+    return res.status(response.code).json({ message: response.message })
+  } catch (error) {
+    console.log(`Erro ao atualizar agendamento: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })
+  }
+}
+
+export async function updateSituation(req, res) {
+  try {
+    const { value, type, id } = req.body
+    if (!value || !type || !id) return res.status(400).json({ message: 'Erro ao realizar ação, tipo e valor são obrigatórios' })
+    const response = await updateSituationService({ value, type, id })
     return res.status(response.code).json({ message: response.message })
   } catch (error) {
     console.log(`Erro ao atualizar agendamento: ${error?.message}`)

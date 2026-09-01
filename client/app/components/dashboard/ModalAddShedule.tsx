@@ -26,6 +26,7 @@ export interface PropsObj {
   openingDate?: string
   tecnicianName?: string,
   clientId?: number | null
+  client?: string
 }
 
 interface ValuesDatabase {
