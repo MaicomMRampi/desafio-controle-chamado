@@ -29,12 +29,14 @@ interface UpdateProps {
 }
 
 export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer) {
-  const { user }: UserAuth | any = useAuth()
+  const { user, isAdmin }: UserAuth | any = useAuth()
   const [dataPriority, setDataPriority] = useState<PropsData[]>([])
   const [updateState, setUpdateState] = useState<UpdateProps>({ priority: '', status: '' })
   const [message, setMessage] = useState('')
   const [allMessage, setAllMessage] = useState([])
   const [tabsIndicator, setTabsIndicator] = useState('Dados do Chamado')
+  const isClosedStatus = updateState?.status === 'Resolvido' || updateState?.status === 'Cancelado'
+  const isDisabled = !isAdmin && isClosedStatus;
 
   const formatDate = (dateString?: string, type?: number) => {
     if (!dateString) return "-";
@@ -184,6 +186,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                   <div className="flex gap-2">
                     {user?.role != 'cliente' && (
                       <Select
+                        isDisabled={isDisabled}
                         placeholder="Status"
                         variant="secondary"
                         className="w-full"
@@ -215,6 +218,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                     )}
                     {user?.role != 'cliente' && (
                       <Select
+                        isDisabled={isDisabled}
                         placeholder="Prioridade"
                         variant="secondary"
                         className="w-full"
@@ -251,15 +255,15 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                   <div className="h-100 overflow-y-auto max-h-100 border rounded-2xl border-blue-900 my-2">
                     <Chat history={allMessage} />
                   </div>
-                  <TextArea maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Digite aqui a mensagem ou a solução" className={"w-full"} rows={4} variant="secondary" />
-                  <div className="w-full flex justify-between my-4">
-                    <Button onPress={() => saveNote('publica')}>Enviar Mensagem ao cliente</Button>
+                  <TextArea disabled={isDisabled} maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Digite aqui a mensagem ou a solução" className={"w-full"} rows={4} variant="secondary" />
+                  <div className="w-full flex justify-end my-4">
+                    <Button isDisabled={isDisabled} onPress={() => saveNote('publica')}>Enviar Mensagem ao cliente</Button>
                   </div>
                 </Tabs.Panel>
               </Tabs>
             </Drawer.Body>
             <Drawer.Footer className="border-t pt-4">
-              <Button className="w-full">
+              <Button isDisabled={isDisabled} className="w-full">
                 Concluir Atendimento
               </Button>
               <Button variant="secondary" onClick={onClose} className="w-full">

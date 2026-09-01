@@ -1,4 +1,5 @@
 import { db } from "../config/databaseConnect.js"
+import ErroResponse from "../utils/returnErro.js"
 
 const sqlInsertScheduling =
   `
@@ -36,20 +37,15 @@ const getScheduling =
     left join usuario_table u on a.tecnico_id = u.id 	
     left join usuario_table uu on a.cliente_id = uu.id	
   where
-  a.ativo is true and 
-  (
+  a.ativo is true and (
     exists (
-    select
-      1
-    from
-      usuario_table utt
-    where
-      utt.id = $1
-      and 
-    utt.perfil = 'administrador'
-  )
-    or 
-  a.usuario_responsavel_id = $1
+      select 1 
+      from usuarios u_admin 
+      where u_admin.id = $1 and u_admin.perfil = 'administrador'
+    )
+    or a.usuario_responsavel_id = $1
+    or a.tecnico_id = $1
+    or a.cliente_id = $1
   )
   order by id desc
 `
