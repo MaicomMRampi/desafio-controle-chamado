@@ -26,7 +26,7 @@ export async function deleteUser(req, res) {
   } catch (error) {
     console.log(`Erro exluir usuario: ${error?.message}`)
 
-    return res.status(500).json({ message: `Erro ao excluir usuario` })
+    return res.status(500).json({ message: error?.message || 'Erro interno ao excluir usuário' })
   }
 }
 

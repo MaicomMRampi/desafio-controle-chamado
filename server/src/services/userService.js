@@ -40,7 +40,16 @@ export async function deleteUserId(id) {
 
     return { error: false }
   } catch (error) {
-    throw new Error(`${error?.message || 'Erro ao buscar usuários'}`)
+    if (error.code == '23503') {
+
+      return {
+        error: true,
+        code: 409,
+        message: 'Erro ao excluir usuario: Cliente possui agendamento vinculado'
+      }
+    }
+
+    throw new Error(`${error?.message || 'Erro ao excluir usuário'}`)
   }
 }
 
