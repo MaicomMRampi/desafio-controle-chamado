@@ -122,9 +122,11 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
                           <Mail />
                         </Button>
                       )}
-                      <Button onPress={() => onView(row)} isIconOnly variant="ghost">
-                        <Eye className="text-blue-600" />
-                      </Button>
+                      {user?.role != 'cliente' && (
+                        <Button onPress={() => onView(row)} isIconOnly variant="ghost">
+                          <Eye className="text-blue-600" />
+                        </Button>
+                      )}
                       {isAdmin && (
                         <>
                           <Button onPress={() => onEdit(row)} isIconOnly variant="ghost">

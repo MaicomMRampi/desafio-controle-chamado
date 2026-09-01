@@ -77,8 +77,8 @@ export async function updateSituation(req, res) {
 
 export async function saveNote(req, res) {
   try {
-    const { id, technician_id, clientId } = req.body.data
-    const { type, message } = req.body
+    const { type, message, id } = req.body
+    
     const idUser = req.user.id
     if (!id || !idUser || !type || !message) return res.status(400).json({ message: 'Erro ao inserir, valores faltantes para concluir a operação' })
 
@@ -86,8 +86,8 @@ export async function saveNote(req, res) {
 
     return res.status(response.code).json({ message: response.message })
   } catch (error) {
-    console.log(`Erro ao atualizar agendamento: ${error?.message}`)
-    return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })
+    console.log(`Erro ao salvar mensagem: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao salvar mensagem: ${error?.message}` })
   }
 }
 
@@ -99,7 +99,7 @@ export async function getMessages(req, res) {
     const response = await getMessagesService({ id, idUser })
     return res.status(200).json(response)
   } catch (error) {
-    console.log(`Erro ao atualizar agendamento: ${error?.message}`)
-    return res.status(500).json({ message: `Erro ao atualizar agendamento: ${error?.message}` })
+    console.log(`Erro ao buscar mensagens: ${error?.message}`)
+    return res.status(500).json({ message: `Erro ao buscar mensagens: ${error?.message}` })
   }
 }

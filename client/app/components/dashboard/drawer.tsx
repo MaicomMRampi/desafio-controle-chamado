@@ -8,7 +8,8 @@ import { useAuth } from "@/app/utils/auth_provider";
 import { UserAuth } from "@/app/page";
 import { useEffect, useState } from "react";
 import { api } from "@/app/lib/axiosInstance";
-import { showErrorToast } from "../toastDefault";
+import { showErrorToast, showSuccessToast } from "../toastDefault";
+import Chat from "../Chat";
 
 interface PropsDrawer {
   open: boolean;
@@ -32,6 +33,8 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
   const [dataPriority, setDataPriority] = useState<PropsData[]>([])
   const [updateState, setUpdateState] = useState<UpdateProps>({ priority: '', status: '' })
   const [message, setMessage] = useState('')
+  const [allMessage, setAllMessage] = useState([])
+  const [tabsIndicator, setTabsIndicator] = useState('Dados do Chamado')
 
   const formatDate = (dateString?: string, type?: number) => {
     if (!dateString) return "-";
@@ -48,6 +51,15 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
     }
   };
 
+  async function getAllMessage() {
+    try {
+      const responseMessage = await api.get(`/getMessages?id=${data?.id}`)
+      setAllMessage(responseMessage.data)
+    } catch (error: any) {
+      console.log(`Erro ao buscar as mensagens:${error?.message}`)
+    }
+  }
+
   async function getAllPriority() {
     try {
       const response = await api.get("/getPriority")
@@ -62,12 +74,21 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
   async function saveNote(type: string) {
     try {
       if (message.length === 0) return showErrorToast('O campo da mensagem é obrigatório')
-      const response = await api.post('/saveNote', { message, type, data })
+      const response = await api.post('/saveNote', { message, type, id: data?.id })
+      getAllMessage()
+      showSuccessToast('Mensagem enviada com sucesso !')
+      setMessage('')
     } catch (error: any) {
       showErrorToast(error?.response?.data?.message)
       console.log(`Erro ao salvar mensagem, ${error?.message}`)
     }
   }
+
+  useEffect(() => {
+    if (tabsIndicator === 'analytics') {
+      getAllMessage()
+    }
+  }, [tabsIndicator])
 
   useEffect(() => {
     if (open) {
@@ -99,7 +120,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
             </Drawer.Header>
 
             <Drawer.Body className="py-4 space-y-4">
-              <Tabs className="w-full">
+              <Tabs className="w-full" onSelectionChange={(id) => setTabsIndicator(String(id))}>
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Options">
                     <Tabs.Tab id="Dados do Chamado">
@@ -226,16 +247,12 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                   </div>
                 </Tabs.Panel>
                 <Tabs.Panel className="pt-4 min-h-full" id="analytics">
-                  <h1>Ultima anotação interna</h1>
-                  <div className="max-h-20 overflow-y-auto rounded-2xl border p-4 border-yellow-400 my-2">
-                    fd
-                  </div>
                   <h1>Histórico de mensagens</h1>
                   <div className="h-100 overflow-y-auto max-h-100 border rounded-2xl border-blue-900 my-2">
+                    <Chat history={allMessage} />
                   </div>
                   <TextArea maxLength={200} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Digite aqui a mensagem ou a solução" className={"w-full"} rows={4} variant="secondary" />
                   <div className="w-full flex justify-between my-4">
-                    <Button className={"bg-amber-500"} onPress={() => saveNote('interna')}>Salvar nota interna</Button>
                     <Button onPress={() => saveNote('publica')}>Enviar Mensagem ao cliente</Button>
                   </div>
                 </Tabs.Panel>
