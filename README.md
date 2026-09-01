@@ -2,7 +2,7 @@
 
 O **Help Desk** é um sistema para controle de chamados de suporte técnico.
 
-A ideia do projeto é centralizar as solicitações em um único lugar, permitindo que o cliente abra um chamado, o técnico consiga visualizar e atender a solicitação e o administrador tenha controle sobre usuários, chamados e informações do sistema.
+A ideia do projeto é centralizar as solicitações em um único lugar, permitindo que o cliente abra um chamado, o técnico consiga visualizar e atender a solicitação e o administrador tenha controle sobre usuários, chamados e informações do sistema. Além disso, o sistema possui um chat interno de troca de mensagens entre técnico > cliente
 
 O projeto foi desenvolvido pensando principalmente em **organização, controle de acesso e facilidade de uso**.
 
@@ -18,6 +18,8 @@ O projeto foi desenvolvido pensando principalmente em **organização, controle 
 * **Lucide React** — ícones
 * **Axios** — comunicação com a API
 * **React Hook Form** — formulários
+* **DaisyUi** — layoult de chat
+* **dayJs** — para manipulação de datas
 
 ### Back-end
 
@@ -54,18 +56,21 @@ Atualmente existem três perfis:
 * Gerenciamento dos chamados
 * Acesso às métricas
 * Controle geral do sistema
+* Troca de Mensagens (visulização de todas, independente do técnico)
 
 **Técnico**
 
 * Visualização dos chamados
 * Atendimento
 * Atualização dos chamados
+* Interação com o cliente
 
 **Cliente**
 
 * Abertura de chamados
 * Visualização dos próprios chamados
 * Acompanhamento das solicitações
+* Responstas ao técnico
 
 ---
 
@@ -89,6 +94,7 @@ O principal objetivo do sistema é o gerenciamento dos chamados.
 * Atribuir chamados
 * Visualizar os detalhes
 * Acompanhar o atendimento
+* Trocar informações com o cliente
 
 Os detalhes de cada chamado são exibidos através de um **Drawer lateral**, evitando a necessidade de sair da tela atual para consultar uma solicitação.
 
@@ -109,7 +115,7 @@ Também existe um tratamento dos dados retornados pela API para evitar registros
 
 ### Dashboard
 
-O sistema possui um dashboard para visualizar de forma rápida como estão os chamados.
+O sistema possui um dashboard na tela central possibilitando checar algumas informações.
 
 Algumas das informações apresentadas são:
 
@@ -117,9 +123,7 @@ Algumas das informações apresentadas são:
 * Chamados abertos
 * Chamados em atendimento
 * Chamados finalizados
-* Distribuição por status
-
-A ideia é que o administrador consiga ter uma visão geral do que está acontecendo sem precisar entrar chamado por chamado.
+* Chamados vencidos
 
 ---
 
@@ -160,7 +164,7 @@ cd desafio-controle-chamado
 No PostgreSQL, crie o banco que será utilizado pelo sistema:
 
 ```sql
-CREATE DATABASE help_desk;
+CREATE DATABASE helpdesk_db;
 ```
 
 Não é necessário criar as tabelas manualmente. O próprio projeto possui um script para isso.
@@ -188,15 +192,21 @@ Depois crie um arquivo `.env` dentro da pasta `server`.
 Exemplo:
 
 ```env
+# porta para startar a aplicação do back end
 PORT=5000
-
+# ------ banco de dados --------
+DB_USERNAME=postgres
+DB_DATABASE=helpdesk_db
+DB_PASSWORD= sua senha do banco de dados
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=sua_senha
-DB_NAME=help_desk
+# ------------------------------
+JWT_SECRET=fdbd8e75a67f29f701a4e040385e2e23986303ea10239211af907fcbb83578b3e417cb71ce646efd0819dd8c088de1bd
+NODE_ENV=development
 
-JWT_SECRET=sua_chave_secreta
+# porta para validar o cors
+API_URL_FRONTEND=http://localhost:3000
+
 ```
 
 Altere os valores de acordo com a configuração do seu PostgreSQL.
@@ -232,6 +242,7 @@ Exemplo:
 ![Credenciais do administrador](https://github.com/user-attachments/assets/e6535977-eb7c-42cc-850e-6ab74a9d8128)
 
 > Guarde essas informações. Esse será o usuário utilizado para fazer o primeiro acesso ao sistema.
+> Caso perca esse acesso, basta rodar o script novamente que o sistema retornara um novo administrador
 
 Depois de entrar, o administrador poderá cadastrar os demais usuários.
 
@@ -268,7 +279,8 @@ npm install
 Depois crie o arquivo `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
+# rota de acesso ao back end (porta 5000 conforme .env server) 
+NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
 Se sua API estiver rodando em outra porta, basta alterar esse valor.
