@@ -15,26 +15,39 @@ export default async function authJwt(req, res, next) {
 
   if (!help_desk_token) return res.status(401).json({ message: 'Usuário não autenticado' })
 
-  try {
-    const decoded = jwt.verify(help_desk_token, process.env.JWT_SECRET)
-
-    const idUser = decoded?.id ?? 0
-    const isActive = await checkActiveUser(idUser)
-
-    // verifica se o usuário está ativo
-    if (!isActive) return res.status(401).json({ message: 'Usuário não encontrado ou inativo' })
-
-    req.user = decoded
-
-    return next()
-  } catch (error) {
-
+  const clearAuthCookie = () => {
     res.clearCookie('help_desk_token', {
       httpOnly: true,
       sameSite: 'lax',
       path: '/',
       secure: process.env.NODE_ENV === 'production'
     })
+  }
+
+  try {
+    const decoded = jwt.verify(help_desk_token, process.env.JWT_SECRET)
+
+    const idUser = decoded?.id
+
+    if (!idUser) {
+      clearAuthCookie()
+
+      return res.status(401).json({ message: 'Token inválido' })
+    }
+    const isActive = await checkActiveUser(idUser)
+
+    // verifica se o usuário está ativo
+    if (!isActive) {
+      clearAuthCookie()
+      return res.status(401).json({ message: 'Usuário não encontrado ou inativo' })
+    }
+
+    req.user = decoded
+
+    return next()
+  } catch (error) {
+
+    clearAuthCookie()
 
     if (error.name === 'TokenExpiredError') {
 
