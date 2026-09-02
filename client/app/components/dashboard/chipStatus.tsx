@@ -3,7 +3,7 @@ import { Chip } from "@heroui/react";
 export function Status({ value }: { value: string }) {
   const colors: Record<string, string> = {
     Aberto: "bg-blue-100 text-blue-700",
-    "Em atendimento": "bg-yellow-100 text-yellow-700",
+    "Em Atendimento": "bg-yellow-100 text-yellow-700",
     Resolvido: "bg-green-100 text-green-700",
     Cancelado: "bg-red-100 text-red-700",
   };

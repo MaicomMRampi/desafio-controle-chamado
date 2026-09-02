@@ -15,6 +15,7 @@ import { UserAuth } from "@/app/page";
 import { api } from "@/app/lib/axiosInstance";
 import { showErrorToast, showSuccessToast } from "../toastDefault";
 import Chat from "../Chat";
+import CompleteService from "./ModalCompleteService";
 
 interface PropsDrawer {
   open: boolean;
@@ -33,6 +34,11 @@ interface UpdateProps {
   status: string
 }
 
+interface StatusOption {
+  value: string;
+  label: string;
+}
+
 export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer) {
   const { user, isAdmin }: UserAuth | any = useAuth()
   const [dataPriority, setDataPriority] = useState<PropsData[]>([])
@@ -42,6 +48,8 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
   const [tabsIndicator, setTabsIndicator] = useState('Dados do Chamado')
   const isClosedStatus = updateState?.status === 'Resolvido' || updateState?.status === 'Cancelado'
   const isDisabled = !isAdmin && isClosedStatus;
+  const [updateNotResolved, setUpdateNotResolved] = useState<StatusOption[]>([])
+  const [modal, setModal] = useState(false)
 
   const formatDate = (dateString?: string, type?: number) => {
     if (!dateString) return "-";
@@ -56,7 +64,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
     } else {
       return new Date(dateString).toLocaleDateString("pt-BR")
     }
-  };
+  }
 
   async function getAllMessage() {
     try {
@@ -99,6 +107,8 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
 
   useEffect(() => {
     if (open) {
+      const filter = STATUS_OPTIONS.filter((item) => item.value != 'Resolvido')
+      setUpdateNotResolved(filter)
       getAllPriority()
       setUpdateState(prev => ({
         ...prev,
@@ -211,7 +221,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
                         </Select.Trigger>
                         <Select.Popover>
                           <ListBox>
-                            {STATUS_OPTIONS?.map((i: any, index: any) => (
+                            {updateNotResolved?.map((i: any, index: any) => (
                               <ListBox.Item key={i.value} id={i.value} textValue={i.label}>
                                 {i.label}
                                 <ListBox.ItemIndicator />
@@ -268,7 +278,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
               </Tabs>
             </Drawer.Body>
             <Drawer.Footer className="border-t pt-4">
-              <Button isDisabled={isDisabled} className="w-full">
+              <Button isDisabled={isDisabled} onPress={() => setModal(true)} className="w-full">
                 Concluir Atendimento
               </Button>
               <Button variant="secondary" onClick={onClose} className="w-full">
@@ -278,6 +288,7 @@ export function DrawerScheduling({ open, onClose, data, onStatus }: PropsDrawer)
           </Drawer.Dialog>
         </Drawer.Content>
       </Drawer.Backdrop>
+      <CompleteService open={modal} onClose={() => setModal(false)} onConfirm={() => { onStatus('Resolvido', 'status', Number(data?.id)); setTimeout(() => { setModal(false) }, 500) }} />
     </Drawer>
   );
 }
