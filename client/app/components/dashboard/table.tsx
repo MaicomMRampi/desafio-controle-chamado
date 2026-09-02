@@ -1,9 +1,14 @@
 "use client";
 
+// hero ui
 import type { SortDescriptor } from "@heroui/react";
 import { Button, Table } from "@heroui/react";
 import { Edit, Eye, Mail, Trash2 } from "lucide-react";
+
+// hooks
 import { useState } from "react";
+
+// importações do projeto
 import { Status, Priority } from './chipStatus'
 import { UserAuth } from '../../page'
 import { useAuth } from "@/app/utils/auth_provider";

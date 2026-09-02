@@ -1,12 +1,14 @@
 "use client";
 
-import { api } from "@/app/lib/axiosInstance";
+// hero ui
 import { Button, Chip, Table } from "@heroui/react";
 import { Trash, UserRoundX } from 'lucide-react';
 
+// hooks
 import { useEffect, useState } from "react";
-// components
 
+// components
+import { api } from "@/app/lib/axiosInstance";
 import DeleteModal from "@/app/components/ModalDeleteDefault";
 import NewStatus, { PropsModal } from "../ModalNewStatus";
 import { showErrorToast, showSuccessToast } from "../toastDefault";
@@ -34,7 +36,6 @@ const colorChip = {
 } as const
 
 export default function Priority() {
-
   const [modal, setModal] = useState<PropsStateModal>({ open: false, data: {}, type: null })
   const [data, setData] = useState<PropsData[]>([])
 
@@ -76,6 +77,7 @@ export default function Priority() {
       console.log(`Erro ao deletar status: ${error}`)
     }
   }
+
   useEffect(() => {
     getAllPriority()
   }, [])

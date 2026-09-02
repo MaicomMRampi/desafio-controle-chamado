@@ -1,14 +1,21 @@
 "use client"
 
-import { useAuth } from "@/app/utils/auth_provider"
-import { UserAuth } from "@/app/page"
+// componentes do hero ui
 import { Button, Input, Chip, TextField, Label } from "@heroui/react"
 import { Save } from "lucide-react"
+
+// react hook form
 import { Controller, useForm } from "react-hook-form"
+
+// hooks
 import { useEffect } from "react"
+
+// importações do projeto
 import { api } from "@/app/lib/axiosInstance"
-import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault"
+import { useAuth } from "@/app/utils/auth_provider"
 import { useRouter } from "next/navigation"
+import { UserAuth } from "@/app/page"
+import { showSuccessToast, showErrorToast } from "@/app/components/toastDefault"
 
 interface PropsForm {
   name: string
@@ -29,9 +36,7 @@ const defaultValuesUser: PropsForm = {
 export default function Profile() {
   const { user }: UserAuth | any = useAuth()
   const router = useRouter()
-
   const { control, handleSubmit, reset, watch, formState: { errors }, } = useForm<PropsForm>({ defaultValues: defaultValuesUser, })
-
   const newPasswordValue = watch("newPassword")
 
   async function updateUser(values: PropsForm) {

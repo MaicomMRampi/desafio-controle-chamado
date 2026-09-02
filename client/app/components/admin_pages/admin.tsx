@@ -1,12 +1,17 @@
 "use client";
 
-import DeleteModal from "@/app/components/ModalDeleteDefault";
-import NewUser, { PropsModal } from "@/app/components/ModalNovoUsuario";
-import { api } from "@/app/lib/axiosInstance";
+// hero ui
 import { Button, Chip, Table } from "@heroui/react";
 import { Pencil, UserRoundX } from 'lucide-react';
+
+// hooks
 import { useEffect, useState } from "react";
+
+// importações do projeto
 import { showErrorToast, showSuccessToast } from "../toastDefault";
+import NewUser, { PropsModal } from "@/app/components/ModalNovoUsuario";
+import { api } from "@/app/lib/axiosInstance";
+import DeleteModal from "@/app/components/ModalDeleteDefault";
 import { useAuth } from "@/app/utils/auth_provider";
 
 interface PropsStateModal {
@@ -35,10 +40,9 @@ const Icons = ({ onChange, id, idUserLogin }: ProposIcons) => {
 }
 
 export default function AdminPage() {
-
   const [modal, setModal] = useState<PropsStateModal>({ open: false, data: {}, type: null })
   const [users, setUsers] = useState<PropsModal[]>([])
-  const {user} : null | any = useAuth() 
+  const { user }: null | any = useAuth()
 
   async function getAllUsers() {
     try {
@@ -79,6 +83,7 @@ export default function AdminPage() {
       console.log(`Erro ao criar usuário: ${error?.response?.data?.message}`);
     }
   }
+
   useEffect(() => {
     getAllUsers()
   }, [])

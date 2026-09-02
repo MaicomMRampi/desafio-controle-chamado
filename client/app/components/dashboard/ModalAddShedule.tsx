@@ -1,13 +1,19 @@
-"use client";
+"use client"
 
-import { api } from "@/app/lib/axiosInstance";
-import { Button, Input, Label, Modal, Surface, TextArea, TextField, Select, ListBox } from "@heroui/react";
-import { Headset } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+// hero ui
+import { Button, Input, Label, Modal, Surface, TextArea, TextField, Select, ListBox } from "@heroui/react"
+
+import { Headset } from "lucide-react"
+
+// hooks
+import { useEffect, useState } from "react"
+import { useForm, Controller } from "react-hook-form"
+
+// importações do projeto
 import { STATUS_OPTIONS } from './statusValues'
-import { useAuth } from "@/app/utils/auth_provider";
-import { UserAuth } from "@/app/page";
+import { api } from "@/app/lib/axiosInstance"
+import { useAuth } from "@/app/utils/auth_provider"
+import { UserAuth } from "@/app/page"
 
 interface PaperProps {
   open: boolean,
@@ -60,7 +66,7 @@ export function ModalAddShedule({ open, onClose, onSave, valuesOnEdit }: PaperPr
         setData(response.data)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`)
     }
   }
 
@@ -74,7 +80,7 @@ export function ModalAddShedule({ open, onClose, onSave, valuesOnEdit }: PaperPr
         setThecnicians(findTecnician)
       }
     } catch (error: any | unknown) {
-      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`);
+      console.log(`Erro ao buscar usuários: ${error?.response?.data?.message}`)
     }
   }
 
@@ -299,5 +305,5 @@ export function ModalAddShedule({ open, onClose, onSave, valuesOnEdit }: PaperPr
         </Modal.Container>
       </Modal.Backdrop>
     </Modal >
-  );
+  )
 }

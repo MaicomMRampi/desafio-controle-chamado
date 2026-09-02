@@ -1,12 +1,17 @@
 "use client";
 
+// hero ui
 import { Button, Chip, Drawer, Label, ListBox, Select, Tabs, TextArea } from "@heroui/react";
+
+// hooks
+import { useEffect, useState } from "react";
+
+// importações do projeto
 import { PropsObj } from "./ModalAddShedule";
 import { Priority, Status } from './chipStatus'
 import { STATUS_OPTIONS } from "./statusValues";
 import { useAuth } from "@/app/utils/auth_provider";
 import { UserAuth } from "@/app/page";
-import { useEffect, useState } from "react";
 import { api } from "@/app/lib/axiosInstance";
 import { showErrorToast, showSuccessToast } from "../toastDefault";
 import Chat from "../Chat";

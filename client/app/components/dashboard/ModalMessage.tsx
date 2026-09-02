@@ -1,10 +1,13 @@
 "use client";
 
-import { api } from "@/app/lib/axiosInstance";
+// hero ui
 import { Button, Modal, TextArea } from "@heroui/react";
 import { Mail, MailBadge, Rocket } from "lucide-react";
 import { useEffect, useState } from "react";
+
+// importações do projeto
 import Chat from "../Chat";
+import { api } from "@/app/lib/axiosInstance";
 import { showErrorToast, showSuccessToast } from "../toastDefault";
 
 interface ModalProps {

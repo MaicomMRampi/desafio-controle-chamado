@@ -1,10 +1,14 @@
 "use client"
 
-import { showErrorToast, showSuccessToast } from "@/app/components/toastDefault"
-import { api } from "@/app/lib/axiosInstance"
+// componentes do hero ui
+
 import { Avatar, Button, Input, Label } from "@heroui/react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+
+// importações do projeto
+import { api } from "@/app/lib/axiosInstance"
+import { showErrorToast, showSuccessToast } from "@/app/components/toastDefault"
 
 interface FormData {
   email: string
@@ -14,8 +18,6 @@ interface FormData {
 export default function Login() {
   const { register, handleSubmit, formState: { errors }, } = useForm({ defaultValues: { email: "", password: "", }, })
   const router = useRouter()
-
-  // ============= FUNÇÕES ============ 
 
   async function onSubmitForm(data: FormData) {
     try {

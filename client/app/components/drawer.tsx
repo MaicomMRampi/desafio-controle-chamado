@@ -1,19 +1,17 @@
 "use client";
 
+// hero ui
 import { Button, Drawer } from "@heroui/react";
-import { api } from "../lib/axiosInstance";
 import { useRouter, usePathname } from "next/navigation";
+import { Home, ShieldCheck, User, LogOut, Menu, PhoneIncoming } from "lucide-react";
+
+// react
 import Link from "next/link";
-import { UserAuth } from '../page'
 import { useState } from "react";
-import {
-  Home,
-  ShieldCheck,
-  User,
-  LogOut,
-  Menu,
-  PhoneIncoming
-} from "lucide-react";
+
+// importações do projeto
+import { UserAuth } from '../page'
+import { api } from "../lib/axiosInstance";
 import { useAuth } from "../utils/auth_provider";
 import { showErrorToast, showSuccessToast } from "./toastDefault";
 

@@ -14,9 +14,7 @@ interface MetricsProps {
 
 export default function Metrics({ values = [] }: MetricsProps) {
   const now = new Date();
-
   const abertos = values.filter((item) => item.status === "Aberto").length;
-
   const vencidos = values.filter((item) => {
     const isAberto = item.status === "Aberto";
     const isVencido = new Date(item.openingDate) < now;
