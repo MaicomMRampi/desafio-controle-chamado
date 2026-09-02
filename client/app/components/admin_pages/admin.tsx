@@ -141,7 +141,7 @@ export default function AdminPage() {
           </Table.Content>
         </Table.ResizableContainer>
       </Table>
-      <NewUser data={modal.data} onSave={(values) => saveUser(values)} open={modal.open && (modal.type === 'new' || modal.type === 'edit')} onClose={() => setModal({ ...modal, open: false })} />
+      <NewUser id={Number(user?.id)} data={modal.data} onSave={(values) => saveUser(values)} open={modal.open && (modal.type === 'new' || modal.type === 'edit')} onClose={() => setModal({ ...modal, open: false })} />
       <DeleteModal title="Excluir Usuário" open={modal.open && modal.type === 'delete'} onClose={() => setModal({ ...modal, open: false })} onDelete={deleteUser} text="Tem certeza que deseja excluir este usuário?" />
     </div>
   )

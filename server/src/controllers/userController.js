@@ -31,6 +31,7 @@ export async function userUpdate(req, res) {
   try {
     const { name, id, email, role } = req.body
     if (!name || !id || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+
     const response = await updateUser(req.body)
 
     return res.status(200).json({ message: 'Usuário atualizado com sucesso !' })

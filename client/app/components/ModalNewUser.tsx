@@ -12,7 +12,7 @@ export interface PropsModal {
   password: string;
   status?: boolean | null;
   role: string;
-  firstLogin?: boolean;
+  firstLogin?: boolean
 }
 
 interface Props {
@@ -20,6 +20,7 @@ interface Props {
   onClose: () => void;
   onSave: (data: PropsModal) => void;
   data?: PropsModal;
+  id?: number;
 }
 
 const defaultValues: PropsModal = {
@@ -28,6 +29,7 @@ const defaultValues: PropsModal = {
   email: "",
   password: "",
   role: "",
+  status: null,
 };
 
 const role = [
@@ -45,7 +47,7 @@ const role = [
   }
 ]
 
-export default function NewUser({ open, onClose, onSave, data }: Props) {
+export default function NewUser({ open, onClose, onSave, data, id }: Props) {
   const { control, handleSubmit, reset, formState: { errors }, } = useForm<PropsModal>({ defaultValues: data || defaultValues, });
 
   useEffect(() => {
@@ -189,6 +191,40 @@ export default function NewUser({ open, onClose, onSave, data }: Props) {
                       </Select>
                     )}
                   />
+                  {data?.id && (
+                    <Controller
+                      name="status"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          isDisabled={id === data?.id}
+                          value={field.value === null || field.value === undefined ? null : String(field.value)}
+                          onChange={(key) => field.onChange(key === "true")}
+                          placeholder="Status"
+                          variant="secondary"
+                          className="w-full"
+                        >
+                          <Label>Status</Label>
+                          <Select.Trigger>
+                            <Select.Value />
+                            <Select.Indicator />
+                          </Select.Trigger>
+                          <Select.Popover>
+                            <ListBox>
+                              <ListBox.Item key="true" id="true" textValue="Ativo">
+                                Ativo
+                                <ListBox.ItemIndicator />
+                              </ListBox.Item>
+                              <ListBox.Item key="false" id="false" textValue="Inativo">
+                                Inativo
+                                <ListBox.ItemIndicator />
+                              </ListBox.Item>
+                            </ListBox>
+                          </Select.Popover>
+                        </Select>
+                      )}
+                    />
+                  )}
                 </form>
               </Surface>
             </Modal.Body>

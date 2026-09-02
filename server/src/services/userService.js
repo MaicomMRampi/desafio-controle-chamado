@@ -4,7 +4,7 @@ import ErroResponse from "../utils/returnErro.js";
 
 const sqlGetAllUsers = `select u.nome as name,  u.id, u.email, u.status, u.perfil as role, u.primeiro_acesso as "firstLogin"  from usuarios u order by u.nome asc`
 const sqlDeleteUser = `delete from usuarios where id = $1 `
-const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3 where id = $4`
+const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3, status = $4 where id = $5`
 const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values ($1, $2, $3, $4)`
 const sqlUserPassword = `select senha from usuarios u where u.id = $1`
 const sqlUpdate = `update usuarios set nome = $1, email = $2, senha = $3, primeiro_acesso = $4 where id = $5`
@@ -55,8 +55,8 @@ export async function deleteUserId(id) {
 
 export async function updateUser(values) {
   try {
-    const { name, id, email, role } = values
-    await db.query(sqlUpdateUser, [name, email, role, id])
+    const { name, id, email, role, status } = values
+    await db.query(sqlUpdateUser, [name, email, role, status, id])
     return { message: 'sucess' }
   } catch (error) {
     if (error.code === '23505') {
