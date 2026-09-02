@@ -2,7 +2,7 @@ import { db } from "../config/databaseConnect.js";
 import { comparePassword, gerarHash } from "../utils/bycrypt.js";
 import ErroResponse from "../utils/returnErro.js";
 
-const sqlGetAllUsers = `select u.nome as name,  u.id, u.email, u.status, u.perfil as role, u.primeiro_acesso as "firstLogin"  from usuarios u`
+const sqlGetAllUsers = `select u.nome as name,  u.id, u.email, u.status, u.perfil as role, u.primeiro_acesso as "firstLogin"  from usuarios u order by u.nome asc`
 const sqlDeleteUser = `delete from usuarios where id = $1 `
 const sqlUpdateUser = `update usuarios u set nome = $1, email = $2, perfil = $3 where id = $4`
 const sqlInserUser = `insert into usuarios (nome, email, senha, perfil) values ($1, $2, $3, $4)`
