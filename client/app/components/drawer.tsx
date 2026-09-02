@@ -51,14 +51,15 @@ export default function Navigation() {
   return (
     <>
       <Button
-        variant="ghost"
+        size="lg"
+        variant="primary"
         isIconOnly
         aria-label="Abrir Menu"
         onPress={() => setIsOpen(true)}
-        className="m-2"
+        className="xs:fixed md:top-4 md:left-4 md:z-50 rounded-full p-2.5 bg-primary text-black shadow-md border border-cyan-600"
       >
         <span>
-          <Menu size={22} />
+          <Menu size={50} />
         </span>
       </Button>
 
@@ -73,7 +74,7 @@ export default function Navigation() {
                     <PhoneIncoming size={48} strokeWidth={0.5} />
                   </div>
                   <div>
-                    <Drawer.Heading className="text-base font-bold">Suporte</Drawer.Heading>
+                    <Drawer.Heading className="text-base font-bold">Help Desk</Drawer.Heading>
                     <p className="text-xs text-default-400">Central de Atendimento <b className="text-cyan-600">Bold Energy</b></p>
                   </div>
                 </div>
