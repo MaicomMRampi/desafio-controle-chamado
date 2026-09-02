@@ -46,6 +46,7 @@ export async function newUser(req, res) {
   try {
     const { name, email, role, password } = req.body
     if (!name || !password || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+    if (password.length < 4) return res.status(400).json({ message: 'A senha deve ter no minimo 4 caracteres' })
     const response = await newUserSyst(req.body)
     return res.status(200).json({ message: 'Usuário criado com sucesso !' })
   } catch (error) {

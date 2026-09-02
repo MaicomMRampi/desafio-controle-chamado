@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 // importações do projeto
 import { showErrorToast, showSuccessToast } from "../toastDefault";
-import NewUser, { PropsModal } from "@/app/components/ModalNovoUsuario";
+import NewUser, { PropsModal } from "@/app/components/ModalNewUser";
 import { api } from "@/app/lib/axiosInstance";
 import DeleteModal from "@/app/components/ModalDeleteDefault";
 import { useAuth } from "@/app/utils/auth_provider";

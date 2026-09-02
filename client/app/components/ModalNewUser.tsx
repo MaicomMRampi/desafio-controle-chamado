@@ -131,6 +131,10 @@ export default function NewUser({ open, onClose, onSave, data }: Props) {
                       control={control}
                       rules={{
                         required: !data?.id ? "A senha é obrigatória" : false,
+                        minLength: {
+                          value: 4,
+                          message: "A senha deve ter no mínimo 4 caracteres",
+                        }
                       }}
                       render={({ field }) => (
                         <TextField className="w-full" variant="secondary">
