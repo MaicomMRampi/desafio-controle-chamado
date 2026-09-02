@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
 // hero ui
-import type { SortDescriptor } from "@heroui/react";
-import { Button, Table } from "@heroui/react";
-import { Edit, Eye, Mail, Trash2 } from "lucide-react";
+import type { SortDescriptor } from "@heroui/react"
+import { Button, Table } from "@heroui/react"
+import { Edit, Eye, Mail, Trash2 } from "lucide-react"
 
 // hooks
-import { useMemo, useState } from "react";
+import { useMemo, useState } from "react"
 
 // importações do projeto
 import { Status, Priority } from './chipStatus'
 import { UserAuth } from '../../page'
-import { useAuth } from "@/app/utils/auth_provider";
+import { useAuth } from "@/app/utils/auth_provider"
 
 export interface RowsProps {
   id: number,
@@ -38,20 +38,27 @@ interface Rows {
 export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }: Rows) {
   const { user, isAdmin }: UserAuth | any = useAuth()
 
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ column: "status", direction: "ascending" });
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "status",
+    direction: "ascending"
+  })
+
+  const isClient = user?.role === 'cliente'
 
   const sortedUsers = useMemo(() => {
     return [...rows].sort((a, b) => {
-      const col = sortDescriptor.column as keyof RowsProps;
-      const first = String(a[col]);
-      const second = String(b[col]);
-      let cmp = first.localeCompare(second);
+      const col = sortDescriptor.column as keyof RowsProps
+      const first = String(a[col])
+      const second = String(b[col])
+      let cmp = first.localeCompare(second)
+
       if (sortDescriptor.direction === "descending") {
-        cmp *= -1;
+        cmp *= -1
       }
-      return cmp;
-    });
-  }, [sortDescriptor, rows]);
+
+      return cmp
+    })
+  }, [sortDescriptor, rows])
 
   return (
     <>
@@ -78,13 +85,15 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
                   </Table.SortableColumnHeader>
                 )}
               </Table.Column>
-              <Table.Column allowsSorting id="title">
-                {({ sortDirection }) => (
-                  <Table.SortableColumnHeader sortDirection={sortDirection}>
-                    Cliente
-                  </Table.SortableColumnHeader>
-                )}
-              </Table.Column>
+              {!isClient && (
+                <Table.Column allowsSorting id="title">
+                  {({ sortDirection }) => (
+                    <Table.SortableColumnHeader sortDirection={sortDirection}>
+                      Cliente
+                    </Table.SortableColumnHeader>
+                  )}
+                </Table.Column>
+              )}
               <Table.Column allowsSorting id="cliente">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
@@ -92,20 +101,24 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
                   </Table.SortableColumnHeader>
                 )}
               </Table.Column>
-              <Table.Column allowsSorting id="tecnicianName">
-                {({ sortDirection }) => (
-                  <Table.SortableColumnHeader sortDirection={sortDirection}>
-                    Técnico
-                  </Table.SortableColumnHeader>
-                )}
-              </Table.Column>
-              <Table.Column allowsSorting id="priority">
-                {({ sortDirection }) => (
-                  <Table.SortableColumnHeader sortDirection={sortDirection}>
-                    Prioridade
-                  </Table.SortableColumnHeader>
-                )}
-              </Table.Column>
+              {!isClient && (
+                <Table.Column allowsSorting id="tecnicianName">
+                  {({ sortDirection }) => (
+                    <Table.SortableColumnHeader sortDirection={sortDirection}>
+                      Técnico
+                    </Table.SortableColumnHeader>
+                  )}
+                </Table.Column>
+              )}
+              {!isClient && (
+                <Table.Column allowsSorting id="priority">
+                  {({ sortDirection }) => (
+                    <Table.SortableColumnHeader sortDirection={sortDirection}>
+                      Prioridade
+                    </Table.SortableColumnHeader>
+                  )}
+                </Table.Column>
+              )}
               <Table.Column allowsSorting id="openingDate">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
@@ -124,37 +137,78 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
             <Table.Body>
               {sortedUsers.map((row) => (
                 <Table.Row key={row.id} id={row.id}>
-                  <Table.Cell>{row.id}</Table.Cell>
-                  <Table.Cell><Status value={row.status} /></Table.Cell>
-                  <Table.Cell>{row.client}</Table.Cell>
-                  <Table.Cell>{row.title}</Table.Cell>
-                  <Table.Cell>{row.tecnicianName}</Table.Cell>
-                  <Table.Cell><Priority value={row.priority} /></Table.Cell>
-                  <Table.Cell>{row.openingDate ? new Date(row.openingDate).toLocaleDateString("pt-br") : '-'}</Table.Cell>
+                  <Table.Cell>
+                    {row.id}
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Status value={row.status} />
+                  </Table.Cell>
+                  {!isClient && (
+                    <Table.Cell>
+                      {row.client}
+                    </Table.Cell>
+                  )}
+                  <Table.Cell>
+                    {row.title}
+                  </Table.Cell>
+                  {!isClient && (
+                    <Table.Cell>
+                      {row.tecnicianName}
+                    </Table.Cell>
+                  )}
+                  {!isClient && (
+                    <Table.Cell>
+                      <Priority value={row.priority} />
+                    </Table.Cell>
+                  )}
+
+                  <Table.Cell>
+                    {row.openingDate
+                      ? new Date(row.openingDate).toLocaleDateString("pt-br")
+                      : '-'
+                    }
+                  </Table.Cell>
                   <Table.Cell>
                     <div className="flex gap-3">
                       {['administrador', 'cliente'].includes(user?.role) && (
-                        <Button onPress={() => onMessage(row)} isIconOnly variant="ghost">
+                        <Button
+                          onPress={() => onMessage(row)}
+                          isIconOnly
+                          variant="ghost"
+                        >
                           <Mail />
                         </Button>
                       )}
                       {user?.role != 'cliente' && (
-                        <Button onPress={() => onView(row)} isIconOnly variant="ghost">
+                        <Button
+                          onPress={() => onView(row)}
+                          isIconOnly
+                          variant="ghost"
+                        >
                           <Eye className="text-blue-600" />
                         </Button>
                       )}
+
                       {isAdmin && (
                         <>
-                          <Button onPress={() => onEdit(row)} isIconOnly variant="ghost">
+                          <Button
+                            onPress={() => onEdit(row)}
+                            isIconOnly
+                            variant="ghost"
+                          >
                             <Edit className="text-orange-600" />
                           </Button>
-                          <Button onPress={() => onDelete(row)} isIconOnly variant="ghost">
+
+                          <Button
+                            onPress={() => onDelete(row)}
+                            isIconOnly
+                            variant="ghost"
+                          >
                             <Trash2 className="text-red-500" />
                           </Button>
                         </>
                       )}
                     </div>
-
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -163,5 +217,5 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
         </Table.ScrollContainer>
       </Table>
     </>
-  );
+  )
 }
