@@ -129,7 +129,7 @@ export function ModalAddShedule({ open, onClose, onSave, valuesOnEdit }: PaperPr
                           disabled={isEditing}
                           maxLength={40}
                           value={field.value || ""}
-                          placeholder="Digite o nome do usuário"
+                          placeholder="Digite o titulo do chamado"
                         />
                         {errors.title && (
                           <span className="text-xs text-red-500 mt-1">
