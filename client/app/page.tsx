@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Label, ListBox, Select } from "@heroui/react";
+import { Button, Chip, Input, Label, ListBox, Select } from "@heroui/react";
 import TableHome, { RowsProps } from "./components/dashboard/table";
 import { useAuth } from "./utils/auth_provider";
 import { Plus } from "lucide-react";
@@ -140,7 +140,9 @@ export default function Home() {
         <div className="">
           <h1 className="text-white font-bold">Olá {user?.name} !</h1>
           <h1 className="text-white">Bem-Vindo ao <b>Help Desk</b> Bold Energy</h1>
-          <h1>{user?.role}</h1>
+          <div className="flex gap-2 mt-2">
+            <Chip className="bg-blue-500 text-white"> {user?.role} </Chip>
+          </div>
         </div>
       </div>
       <Metrics

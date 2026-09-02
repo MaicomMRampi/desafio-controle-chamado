@@ -6,7 +6,7 @@ import { Button, Table } from "@heroui/react";
 import { Edit, Eye, Mail, Trash2 } from "lucide-react";
 
 // hooks
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 // importações do projeto
 import { Status, Priority } from './chipStatus'
@@ -38,9 +38,20 @@ interface Rows {
 export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }: Rows) {
   const { user, isAdmin }: UserAuth | any = useAuth()
 
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "status", direction: "ascending",
-  });
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({ column: "status", direction: "ascending" });
+
+  const sortedUsers = useMemo(() => {
+    return [...rows].sort((a, b) => {
+      const col = sortDescriptor.column as keyof RowsProps;
+      const first = String(a[col]);
+      const second = String(b[col]);
+      let cmp = first.localeCompare(second);
+      if (sortDescriptor.direction === "descending") {
+        cmp *= -1;
+      }
+      return cmp;
+    });
+  }, [sortDescriptor, rows]);
 
   return (
     <>
@@ -53,7 +64,7 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
             onSortChange={setSortDescriptor}
           >
             <Table.Header>
-              <Table.Column allowsSorting isRowHeader id="Id">
+              <Table.Column allowsSorting isRowHeader id="id">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
                     Id
@@ -81,21 +92,21 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
                   </Table.SortableColumnHeader>
                 )}
               </Table.Column>
-              <Table.Column allowsSorting id="tecnico">
+              <Table.Column allowsSorting id="tecnicianName">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
                     Técnico
                   </Table.SortableColumnHeader>
                 )}
               </Table.Column>
-              <Table.Column allowsSorting id="prioridade">
+              <Table.Column allowsSorting id="priority">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
                     Prioridade
                   </Table.SortableColumnHeader>
                 )}
               </Table.Column>
-              <Table.Column allowsSorting id="email">
+              <Table.Column allowsSorting id="openingDate">
                 {({ sortDirection }) => (
                   <Table.SortableColumnHeader sortDirection={sortDirection}>
                     Data de Abertura
@@ -111,7 +122,7 @@ export default function TableHome({ rows, onView, onDelete, onEdit, onMessage }:
               </Table.Column>
             </Table.Header>
             <Table.Body>
-              {rows.map((row) => (
+              {sortedUsers.map((row) => (
                 <Table.Row key={row.id} id={row.id}>
                   <Table.Cell>{row.id}</Table.Cell>
                   <Table.Cell><Status value={row.status} /></Table.Cell>
