@@ -48,7 +48,7 @@ create table if not exists agendamento (
 `
 const messages =
   `
-create table agendamento_mensagens (
+create table if not exists agendamento_mensagens (
     id int generated always as identity primary key,
     id_agendamento int not null,
     id_usuario_autor int not null,
