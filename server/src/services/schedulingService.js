@@ -1,14 +1,17 @@
 import { db } from "../config/databaseConnect.js"
 import ErroResponse from "../utils/returnErro.js"
 
-const sqlInsertScheduling =
-  `
+const inactiveScheduling = `update agendamento set ativo = false where id = $1`
+const updateScheduling = `update agendamento set status = $1, tecnico_id = $2, prioridade = $3 where id = $4`
+const updateStatus = `update agendamento set status = $1 where id = $2`
+const updatePriority = `update agendamento set prioridade = $1 where id = $2`
+
+const sqlInsertScheduling = `
   INSERT INTO agendamento 
   (titulo, descricao, cliente_id, tecnico_id, prioridade, usuario_responsavel_id) 
   VALUES ($1, $2, $3, $4, $5, $6)
 `
-const getScheduling =
-  `
+const getScheduling = `
     with usuario_table as (
     select 
     u.id,
@@ -49,18 +52,11 @@ const getScheduling =
   )
   order by id desc
 `
-
-const inactiveScheduling = `update agendamento set ativo = false where id = $1`
-const updateScheduling = `update agendamento set status = $1, tecnico_id = $2, prioridade = $3 where id = $4`
-
-const updateStatus = `update agendamento set status = $1 where id = $2`
-const updatePriority = `update agendamento set prioridade = $1 where id = $2`
 const sqlMessage = `
 INSERT INTO agendamento_mensagens (id_agendamento, id_usuario_autor, tipo_mensagem, mensagem)
 VALUES ($1, $2, $3, $4)
 `
-const getMessages =
-  `
+const getMessages = `
   SELECT 
       am.id,
       am.id_agendamento as "schedulingId",

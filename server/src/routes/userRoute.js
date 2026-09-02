@@ -10,4 +10,5 @@ router.post('/newUser', authJwt, newUser)
 router.put('/editUser', authJwt, userUpdate)
 router.get('/getUsersSheduling', authJwt, getUsers)
 router.put('/updateProfile', authJwt, updateProfile)
+
 export default router

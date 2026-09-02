@@ -17,10 +17,7 @@ export async function deleteUser(req, res) {
     if (!id) return res.status(400).json({ message: 'Id do usuário é obrigatório' })
     const response = await deleteUserId(id)
 
-    if (response.error) {
-
-      return res.status(response.code).json({ message: response.message })
-    }
+    if (response.error) return res.status(response.code).json({ message: response.message })
 
     return res.status(200).json({ message: 'Usuário excluido com sucesso!' })
   } catch (error) {
@@ -35,6 +32,7 @@ export async function userUpdate(req, res) {
     const { name, id, email, role } = req.body
     if (!name || !id || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
     const response = await updateUser(req.body)
+
     return res.status(200).json({ message: 'Usuário atualizado com sucesso !' })
   } catch (error) {
     console.log(`Erro ao atualizar usuario: ${error?.message}`)
@@ -47,6 +45,7 @@ export async function newUser(req, res) {
     const { name, email, role, password } = req.body
     if (!name || !password || !email || !role) return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
     if (password.length < 4) return res.status(400).json({ message: 'A senha deve ter no minimo 4 caracteres' })
+
     const response = await newUserSyst(req.body)
     return res.status(200).json({ message: 'Usuário criado com sucesso !' })
   } catch (error) {
@@ -59,6 +58,7 @@ export async function newUser(req, res) {
 export async function getUsers(req, res) {
   try {
     const response = await getUsersService()
+
     return res.status(200).json(response)
   } catch (error) {
     console.log(`Erro ao usuários': ${error?.message}`)

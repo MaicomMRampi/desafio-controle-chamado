@@ -3,6 +3,7 @@ import { allPriority, savePriority, deletePriorityId } from "../services/priorit
 export async function getAllPriority(req, res) {
   try {
     const response = await allPriority()
+
     return res.status(200).json(response)
   } catch (error) {
     console.log(`Erro ao buscar status do atendimento: ${error?.message}`)

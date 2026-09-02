@@ -3,8 +3,7 @@ import { db } from './databaseConnect.js'
 const green = '\x1b[32m';
 
 // tabelas
-const users =
-  `
+const users = `
   create table if not exists usuarios (
       id int generated always as identity primary key,
       nome varchar(150),
@@ -17,22 +16,20 @@ const users =
   )
 `
 
-const priority =
-  `
+const priority = `
   create table if not exists atendimento_prioridade(
 	id int generated always as identity primary key,
 	descricao varchar(100) unique
 )
 `
 
-const priorityValues =
-  `
+const priorityValues = `
   insert into atendimento_prioridade(descricao) 
   values('BAIXA'), ('MEDIA'), ('ALTA'), ('CRITICA') on conflict(descricao) do nothing
 
 `
-const shedulingSql =
-  `
+
+const shedulingSql = `
 create table if not exists agendamento (
   id int generated always as identity primary key,
   titulo varchar(100) not null,
@@ -46,8 +43,8 @@ create table if not exists agendamento (
   usuario_responsavel_id int references usuarios(id)
   )
 `
-const messages =
-  `
+
+const messages = `
 create table if not exists agendamento_mensagens (
     id int generated always as identity primary key,
     id_agendamento int not null,
@@ -59,7 +56,6 @@ create table if not exists agendamento_mensagens (
 
 
 `
-
 export default async function TablesDatabase() {
 
   let transationStart = false
@@ -71,7 +67,6 @@ export default async function TablesDatabase() {
 
     // Inicia uma transação
     await client.query('BEGIN')
-
     transationStart = true
 
     for (const query of tables) {
@@ -79,7 +74,6 @@ export default async function TablesDatabase() {
     }
 
     await client.query('COMMIT')
-
     console.log(`${green}Criação das tabelas executadas com sucesso !`)
 
     process.exit(0)
