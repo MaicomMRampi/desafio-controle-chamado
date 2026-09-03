@@ -2,7 +2,7 @@
 
 O **Help Desk** é um sistema para controle de chamados de suporte técnico.
 
-A ideia do projeto é centralizar as solicitações em um único lugar, permitindo que o cliente abra um chamado, o técnico consiga visualizar e atender a solicitação e o administrador tenha controle sobre usuários, chamados e informações do sistema. Além disso, o sistema possui um chat interno de troca de mensagens entre técnico > cliente
+A ideia do projeto é centralizar as solicitações em um único lugar, permitindo que o cliente abra um chamado, o técnico consiga visualizar e atender a solicitação e o administrador tenha controle sobre usuários, chamados e informações do sistema. Além disso, o sistema possui um chat interno de troca de mensagens entre técnico > cliente > administrador.
 
 O projeto foi desenvolvido pensando principalmente em **organização, controle de acesso e facilidade de uso**.
 
